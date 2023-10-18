@@ -1,6 +1,7 @@
 ---
 layout: default
 title: Plotly snippets
+nav_order: 2
 ---
 
 # Plotly snippets
