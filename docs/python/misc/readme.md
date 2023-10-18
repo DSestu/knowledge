@@ -1,3 +1,8 @@
+---
+layout: default
+title: Misc snippets
+nav_order: 2
+---
 - [Environment setup](#environment-setup)
   - [Create truly clean conda env](#create-truly-clean-conda-env)
   - [Install poetry from an existing path](#install-poetry-from-an-existing-path)

@@ -1,3 +1,8 @@
+---
+layout: default
+title: Postgresql snippets
+nav_order: 2
+---
 
 - [List manually created tables](#list-manually-created-tables)
 - [Credits to rgreenjr](#credits-to-rgreenjr)

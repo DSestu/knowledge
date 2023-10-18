@@ -1,3 +1,10 @@
+---
+layout: default
+title: Pyspark snippets
+nav_order: 2
+---
+
+
 - [Pyspark snippets](#pyspark-snippets)
 - [SQL](#sql)
   - [Getting data](#getting-data)
