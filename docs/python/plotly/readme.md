@@ -23,6 +23,7 @@ nav_order: 2
   - [General figure modification](#general-figure-modification)
     - [Changing ticks spacing](#changing-ticks-spacing)
     - [Manual change of ticks](#manual-change-of-ticks)
+    - [Putting xticks at the top](#putting-xticks-at-the-top)
     - [Fixing narrow boxplots when using colors](#fixing-narrow-boxplots-when-using-colors)
     - [Removing "=" in facets](#removing--in-facets)
     - [Add ABline](#add-abline)
@@ -183,7 +184,8 @@ p.update_xaxes(
     tickmode = 'array',
     tickvals = {array_like},
     tick
-)```
+)
+```
 
 
 ---
