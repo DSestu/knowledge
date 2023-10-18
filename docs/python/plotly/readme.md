@@ -1,3 +1,8 @@
+---
+layout: default
+title: Plotly snippets
+---
+
 # Plotly snippets
 
 - [Plotly snippets](#plotly-snippets)
