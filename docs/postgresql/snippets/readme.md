@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Postgresql snippets
-nav_order: 2
+nav_order: 1
+parent: PostgreSQL
 ---
 
 - [List manually created tables](#list-manually-created-tables)

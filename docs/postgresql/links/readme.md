@@ -2,6 +2,7 @@
 layout: default
 title: Postgresql links
 nav_order: 2
+parent: PostgreSQL
 ---
 
 # Explain analyze parser
