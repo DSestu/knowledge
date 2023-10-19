@@ -6,3 +6,6 @@ url: https://just-the-docs.github.io
 
 aux_links:
   Source: https://github.com/DSestu/knowledge
+
+search_enabled: true
+color_scheme: dark
