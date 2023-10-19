@@ -41,7 +41,7 @@ nav_order: 2
   - [Plotting large number of points](#plotting-large-number-of-points)
     - [Snippet for large scatterplot](#snippet-for-large-scatterplot)
 
-```{python}
+```python
 import plotly.express as px
 p = px.scatter(...)
 ```
@@ -51,7 +51,7 @@ p = px.scatter(...)
 
 ### General theming
 
-```{Python}
+```python
 import plotly.io as pio
 ```
 
@@ -59,7 +59,7 @@ import plotly.io as pio
 
 #### Force notebook renderer
 
-```{Python}
+```python
 pio.renderers.default = "notebook"
 ```
 
@@ -67,7 +67,7 @@ pio.renderers.default = "notebook"
 
 #### Dark mode
 
-```{Python}
+```python
 pio.templates.default = "plotly_dark"
 ```
 
@@ -77,7 +77,7 @@ pio.templates.default = "plotly_dark"
 
 #### Supress margins
 
-```{Python}
+```python
 no_margins = dict(l=0, r=0, t=0, b=0)
 (...)
 p.update_layout(margins=no_margins)
@@ -87,7 +87,7 @@ p.update_layout(margins=no_margins)
 
 #### Floating legends
 
-```{Python}
+```python
 floating_legend = dict(
     yanchor="top",
     y=0.99,
@@ -102,7 +102,7 @@ p.update_layout(legend=floating_legend)
 
 #### No margins & floating legends
 
-```{Python}
+```python
 px_custom = {
     "margin": no_margins,
     "legend": floating_legend,
@@ -114,7 +114,7 @@ p.update_figure(**px_custom)
 
 ### Create a subplot figure object
 
-```{Python}
+```python
 from plotly.subplots import make_subplots
 
 fig = make_subplots(
@@ -131,7 +131,7 @@ fig = make_subplots(
 
 Then, you have to add traces with the `row`, `col` parameters (**starts at 1**)
 
-```{Python}
+```python
 fig.add_trace(
     px. (or) go. ...,
     row=1,
@@ -143,7 +143,7 @@ fig.add_trace(
 
 ### Make a projection of a palette on specific points
 
-```{Python}
+```python
 px.colors.sample_colorscale(
     # Color scale
     px.colors.sequential.Bluered,
@@ -158,7 +158,7 @@ Traces are found in `fig.data` as a `list`.
 
 Colors can be interpreted with Hex and RGB(A) notations.
 
-```{Python}
+```python
 for data in fig.data:
     data.line.update(
       color="rgb(0, 255, 255)"
@@ -171,7 +171,7 @@ for data in fig.data:
 
 ### Changing ticks spacing
 
-```{Python}
+```python
 p.update_layout(xaxis=dict(dtick=12))
 ```
 
@@ -179,7 +179,7 @@ p.update_layout(xaxis=dict(dtick=12))
 
 ### Manual change of ticks
 
-```{Python}
+```python
 p.update_xaxes(
     tickmode = 'array',
     tickvals = {array_like},
@@ -192,7 +192,7 @@ p.update_xaxes(
 
 ### Putting xticks at the top
 
-```{Python}
+```python
 p.update_xaxes(side="top")
 ```
 
@@ -208,7 +208,7 @@ Workaround: add `boxmode="overlay"` in the arguments.
 
 ### Removing "=" in facets
 
-```{Python}
+```python
 p.for_each_annotation(
     lambda t: t.update(text=t.text.split("=")[1])
 )
@@ -220,7 +220,7 @@ Unfortunately, traces will be present in the legend, but there is a way to avoid
 
 Because of the ABline, there will be a zoom out, so you will also need to either set x/y ranges, or set the ABline points more intelligently.
 
-```{Python}
+```python
 p.add_trace(
     go.Scatter(
         x=[0, 1],
@@ -243,7 +243,7 @@ p.add_trace(
 
 ### Adding custom prefix or suffix to ticks 
 
-```{Python}
+```python
 p.update_traces(ticksuffix="%")
 p.update_traces(tickprefix="Hello")
 ```
@@ -254,13 +254,13 @@ p.update_traces(tickprefix="Hello")
 
 When plotting you can add labels by using `text=`. The position can be modified by using :
 
-```{Python}
+```python
 p.update_traces(textposition='top center')
 ```
 
 ### Change opacity
 
-```{Python}
+```python
 p.update_traces(opacity=.5)
 ```
 
@@ -271,13 +271,13 @@ Specific color mappings can be made with dictionnaries :
 
 One easy trick to outline specific modality is to create a function that highlights a specific modality.
 
-```{Python}
+```python
 highlight = lambda data, mod: {mod: "red", **{s: "blue" for s in data.source.unique() if s != mod}}
 ```
 
 This can be called directly in the creation of the plot:
 
-```{Python}
+```python
 px.scatter(
     dataframe,
     x="x",
@@ -289,7 +289,7 @@ px.scatter(
 
 ### Change colorbar title
 
-```{Python}
+```python
 fig.update_coloraxes(colorbar=dict(title="This is my colorbar title"))
 ```
 
@@ -297,7 +297,7 @@ fig.update_coloraxes(colorbar=dict(title="This is my colorbar title"))
 
 #### Don't match all axis
 
-```{Python}
+```python
 p.update_yaxes(matches=None)
 (or)
 p.update_xaxes(matches=None)
@@ -307,7 +307,7 @@ p.update_xaxes(matches=None)
 
 #### Show ticks on all subplot's axis
 
-```{Python}
+```python
 p.for_each_yaxis(lambda yaxis: yaxis.update(showticklabels=True))
 (or)
 p.for_each_xaxis(lambda xaxis: xaxis.update(showticklabels=True))
@@ -317,13 +317,13 @@ p.for_each_xaxis(lambda xaxis: xaxis.update(showticklabels=True))
 
 #### Stack bars on top of each other
 
-```{Python}
+```python
 p.update_layout(barmode="stack")
 ```
 
 #### Stack multiple bars in the same place
 
-```{Python}
+```python
 p.update_layout(barmode="overlay")
 ```
 
@@ -343,7 +343,7 @@ import datashader as ds
 
 Example:
 
-```{python}
+```python
 cvs = ds.Canvas(
   plot_width= ..., # Number of horizontal pixels
   plot_height= ..., # Number of vertical pixels
@@ -374,7 +374,7 @@ fig.show()
 
 ### Snippet for large scatterplot
 
-```{python}
+```python
 def big_scatter(
     data: pd.DataFrame,
     x: str,
@@ -400,7 +400,7 @@ def big_scatter(
 
 > Usage :
 
-```{python}
+```python
 big_scatter(
     df,
     x="hour",

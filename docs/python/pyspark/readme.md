@@ -51,7 +51,7 @@ An example can be found [here](https://github.com/sencrop/databricks-poc/pull/7)
 
 using a sql like query.
 
-```{python}
+```python
 spark.sql(query)
 ```
 

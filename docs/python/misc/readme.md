@@ -16,13 +16,13 @@ nav_order: 2
 
 ## Create truly clean conda env
 
-```{python}
+```python
 conda env create -n ENV_NAME python=3.9 --no-default-packages
 ```
 
 ## Install poetry from an existing path
 
-```{python}
+```python
 poetry init    
 ```
 
@@ -32,7 +32,7 @@ poetry init
 
 Needs `mgzip`
 
-```{python}
+```python
 import os
 import mgzip
 
@@ -53,7 +53,7 @@ This is not well suited if we often groupby with the same keys, and can lead to 
 
 This is possible to repartition by a categorical key, but it has to be sorted. The manipulation is as follows:
 
-```{Python}
+```python
 # In this example, the loc_id refers to a geographical hash, and is a string.
 (
     ddf
