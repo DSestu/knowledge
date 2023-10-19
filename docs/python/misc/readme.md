@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Misc snippets
-nav_order: 2
+nav_order: 3
+parent: Python
 ---
 - [Environment setup](#environment-setup)
   - [Create truly clean conda env](#create-truly-clean-conda-env)
