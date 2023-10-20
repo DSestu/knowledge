@@ -46,6 +46,22 @@ parent: Python
 # Pyspark snippets
 
 An example can be found [here](https://github.com/sencrop/databricks-poc/pull/7).
+
+# Misc
+
+## Local Pytest
+
+When using pytest routines with PySpark, you may encounter a situation where the pyspark interpreter don't properly recognize python installation.
+
+This can be fixed by integrating (*temporarly*) a environment variable in the `__init__.py` located at the root of your testing folder:
+
+```python
+import os
+os.environ[
+    "PYSPARK_PYTHON"
+] = r"C:\micromamba\.micromamba\envs\weather-pipelines\python.exe"
+```
+
 # SQL
 
 ## Getting data
