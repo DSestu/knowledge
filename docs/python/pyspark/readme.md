@@ -7,6 +7,8 @@ parent: Python
 
 
 - [Pyspark snippets](#pyspark-snippets)
+- [Misc](#misc)
+  - [Local Pytest](#local-pytest)
 - [SQL](#sql)
   - [Getting data](#getting-data)
   - [Some syntaxes differs from postgresql](#some-syntaxes-differs-from-postgresql)
