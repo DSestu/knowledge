@@ -9,6 +9,7 @@ parent: Python
 
 - [Plotly snippets](#plotly-snippets)
   - [Basic configurations](#basic-configurations)
+    - [Fix static image export in windows](#fix-static-image-export-in-windows)
     - [General theming](#general-theming)
       - [Force notebook renderer](#force-notebook-renderer)
       - [Dark mode](#dark-mode)
@@ -49,6 +50,16 @@ p = px.scatter(...)
 
 
 ## Basic configurations
+
+### Fix static image export in windows
+
+The kaleido package from pypi doesn't work properly.
+
+In order for the png renderer to work you need to install this version of kaleido (for AMD processors):
+
+```bash
+pip https://github.com/plotly/Kaleido/releases/download/v0.1.0.post1/kaleido-0.1.0.post1-py2.py3-none-win_amd64.whl
+```
 
 ### General theming
 
