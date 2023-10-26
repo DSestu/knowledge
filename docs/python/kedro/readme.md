@@ -10,7 +10,6 @@ parent: Python
     - [Running a pipeline](#running-a-pipeline)
     - [Running a chunk of pipeline, gathering the output as Python objects](#running-a-chunk-of-pipeline-gathering-the-output-as-python-objects)
 
-
 # Debugging kedro pipelines
 
 ## Access to kedro from a notebook
@@ -41,10 +40,10 @@ If you didn't set your jupyter server password before, the URL may have a token,
 
 The freshly instantiated jupyter kernels has some pre-existing variables (see also: <https://docs.kedro.org/en/stable/notebooks_and_ipython/kedro_and_notebooks.html>):
 
-* catalog
-* context
-* pipelines
-* session
+- catalog
+- context
+- pipelines
+- session
 
 The pipelines variables contains ones that were declared in the pipeline registry.
 
@@ -87,5 +86,7 @@ This works aswell for spark dataframes, meaning that you can directly use:
 ```python
 output["spark_dataframe"].show()
 ```
+
+> Please note that if you want the notebook to be in sync with your codebase, you will have to use the `%reload_kedro` magic!
 
 > This debugging process is highly effective as there is no need to restart the notebook kernel in order to have an up-to-date codebase. This means that you can use a notebook in parallel of your development in order to check the impact of the modifications of your code to the actual data.
