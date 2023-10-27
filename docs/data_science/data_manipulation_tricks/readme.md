@@ -90,4 +90,4 @@ df = (
 df.collect()
 ```
 
-This computation takes 4.3 seconds on the same setup.
+This computation takes 1.5 seconds on the same setup.
