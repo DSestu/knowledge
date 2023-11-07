@@ -93,6 +93,8 @@ output["spark_dataframe"].show()
 
 # Working Spark 3.4/kedro environment
 
+> **Warning:** If you are on Windows, using WSL2 as the micromamba/conda source, make sure to **DISABLE** any antivirus during the install process (avoiding *kernel heap memory corruption*). And **re-enable** it after (so the controlled access folder policy works again, so you will be able to access to files in jupyter).
+
 ```bash
 micromamba env create -f environmnent.yml
 ```
