@@ -5,6 +5,107 @@ parent: Data Science
 nav_order: 2
 ---
 
+# Geographical K-nearest neighbors from lat/lon
+
+Let's say we have a pandas dataframe with latitude (lat) and longitude (lon) columns.
+
+We want for each location the 12 nearest locations of the same dataframe.
+
+First:
+
+```python
+from sklearn.neighbors import BallTree
+import pandas as pd
+
+from math import radians
+
+EARTH_RADIUS = 6371000 / 1000
+```
+
+We need to convert lat/lon to radians:
+
+```python
+df = (
+    df
+    .assign(
+        lat_rad = lambda data: data.latitude.apply(radians),
+        lon_rad = lambda data: data.longitude.apply(radians),
+    )
+)
+```
+
+BallTree returns 2 arrays:
+
+* One of dim N-locations x N-neighbors, with distances values
+* The other also of dim N-locations x N-neighbors, with values values being indexes designating the neighbor
+
+Here, we want 12 neighbors:
+
+```python
+distances, neighbors = BallTree(
+    df[["lat_rad", "lon_rad"]].to_numpy(),
+    metric="haversine"
+).query(
+    df[["lat_rad", "lon_rad"]].to_numpy(),
+    # 13 because it includes itself
+    k=13,
+)
+```
+
+To match indexes with distances, we will melt both arrays before a join.
+This will give a dataframe with: index/neighbor_index/distance in meters.
+
+```python
+df_distance = (
+    pd.DataFrame(distances)
+        # 0 is the origin city, drop it
+        .drop(columns=[0])
+        .reset_index()
+        .melt(id_vars="index")
+        .rename(
+            columns={
+                "value": "distance",
+            },
+        )
+        # Get distance in rounded meters
+        .assign(
+            distance=lambda data: (data["distance"] * EARTH_RADIUS * 1000).astype(int)
+        )
+        .merge(
+            pd.DataFrame(neighbors)
+            .drop(columns=[0])
+            .reset_index()
+            .melt(id_vars="index")
+            .rename(
+                columns={
+                    "value": "neighbor_index",
+                }
+            ),
+            on=["index", "variable"],
+            how="left"
+        )
+)
+```
+
+Now, if we want to recover some data from additional columns of our original dataset, we can do this:
+
+```python
+df_export = (
+    df
+        .reset_index()
+        .merge(
+            df_distance,
+            on="index",
+        )
+        .merge(
+            df
+            .reset_index()
+            .rename(columns={"index": "neighbor_index"}),
+            on="neighbor_index",
+            suffixes=["", "_neighbor"]
+        )
+)
+```
 
 # Lazy split-reduce-compute-merge strategy
 
