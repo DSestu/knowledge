@@ -90,3 +90,39 @@ output["spark_dataframe"].show()
 > Please note that if you want the notebook to be in sync with your codebase, you will have to use the `%reload_kedro` magic!
 
 > This debugging process is highly effective as there is no need to restart the notebook kernel in order to have an up-to-date codebase. This means that you can use a notebook in parallel of your development in order to check the impact of the modifications of your code to the actual data.
+
+# Working Spark 3.4/kedro environment
+
+```bash
+micromamba env create -f environmnent.yml
+```
+
+`environment.yml`
+
+```yaml
+name: wp
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - pip
+  - python==3.10.*
+  - pyspark==3.4.1
+  - h3-pyspark>=1.2.0
+  - shapely>=2.0.*
+  - kedro~=0.18.0
+  - java-jdk>=8.0.0
+  - black
+  - flake8
+  - jupyter
+  - mypy
+  - pip:
+      - kedro-datasets[spark,pandas]==1.8.*
+      - pytest
+      - pytest-cov
+      - pytest-mock
+      - databricks-cli
+      - kedro-viz
+      - hypothesis
+```
