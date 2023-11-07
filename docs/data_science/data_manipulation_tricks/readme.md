@@ -5,6 +5,9 @@ parent: Data Science
 nav_order: 2
 ---
 
+- [Geographical K-nearest neighbors from lat/lon](#geographical-k-nearest-neighbors-from-latlon)
+- [Lazy split-reduce-compute-merge strategy](#lazy-split-reduce-compute-merge-strategy)
+
 # Geographical K-nearest neighbors from lat/lon
 
 Let's say we have a pandas dataframe with latitude (lat) and longitude (lon) columns.

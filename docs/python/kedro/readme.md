@@ -9,6 +9,7 @@ parent: Python
   - [Access to kedro from a notebook](#access-to-kedro-from-a-notebook)
     - [Running a pipeline](#running-a-pipeline)
     - [Running a chunk of pipeline, gathering the output as Python objects](#running-a-chunk-of-pipeline-gathering-the-output-as-python-objects)
+- [Working Spark 3.4/kedro environment](#working-spark-34kedro-environment)
 
 # Debugging kedro pipelines
 
