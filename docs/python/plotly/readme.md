@@ -23,6 +23,7 @@ parent: Python
     - [Make a projection of a palette on specific points](#make-a-projection-of-a-palette-on-specific-points)
     - [A-posteriori modification of trace colors](#a-posteriori-modification-of-trace-colors)
   - [General figure modification](#general-figure-modification)
+    - [Completely changing the hover data](#completely-changing-the-hover-data)
     - [Changing ticks spacing](#changing-ticks-spacing)
     - [Manual change of ticks](#manual-change-of-ticks)
     - [Putting xticks at the top](#putting-xticks-at-the-top)
@@ -47,7 +48,6 @@ parent: Python
 import plotly.express as px
 p = px.scatter(...)
 ```
-
 
 ## Basic configurations
 
@@ -181,6 +181,39 @@ for data in fig.data:
 
 ---
 
+### Completely changing the hover data
+
+You can completely change the hover format with the following approach:
+
+* If you want to use variables inside the formatting:
+
+```python
+px.area(
+    (...),
+    custom_data=["my_col_1", "my_col_2"],
+)
+```
+
+Then you can change the format:
+
+```python
+px.area(
+    (...)
+).update_traces(
+    hovertemplate="<br>".join([
+        # Use the first column from custom_data, bolded
+        "<b>%{customdata[0]}</b>",
+        # Use the value of the X axis, even if the name is not "x"
+        "The x-axis equals to %{x}",    
+        # Use the value of the Y axis, even if the name is not "y"
+        "The y-axis equals to %{y}",
+    ])
+)
+```
+
+
+---
+
 ### Changing ticks spacing
 
 ```python
@@ -253,7 +286,7 @@ p.add_trace(
 
 ---
 
-### Adding custom prefix or suffix to ticks 
+### Adding custom prefix or suffix to ticks
 
 ```python
 p.update_traces(ticksuffix="%")
