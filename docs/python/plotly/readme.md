@@ -211,6 +211,36 @@ px.area(
 )
 ```
 
+**Note: Case of multiple Y plots**
+
+The case of multiple Y plots is as following:
+
+```python
+fig = px.area(
+  (...),
+  y=["var1", "var2", "var3"]
+)
+```
+
+You may want to include this variable name in the hover template.
+
+> You can only do this with manual tweaking of figure data.
+
+The `customdata` is stored as a numpy array, you need to change it manually.
+
+The shape of `customdata` is `(number_of_rows, number_of_custom_columns)`
+
+```python
+import numpy as np
+
+for trace in fig.data:
+  trace["customdata"] = np.hstack([
+    customdata := trace["customdata"],
+    # Replace trace.name with any data you want to display
+    np.repeat([trace.name], customdata.shape[0]).reshape(-1, 1)
+  ])
+```
+
 
 ---
 
