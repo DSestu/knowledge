@@ -11,6 +11,6 @@ These bits of knowledge are mainly focused on data subjects via Python/PostgresS
 
 Most complete pages:
 
-* [Plotly snippets]("docs/python/plotly/readme.html")
+* [Plotly snippets](docs/python/plotly/readme.html)
 
-* [PostgreSQL snippets]("docs/postgresql/snippets/readme.html")
+* [PostgreSQL snippets](docs/postgresql/snippets/readme.html)
