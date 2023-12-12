@@ -368,6 +368,12 @@ px.scatter(
 fig.update_coloraxes(colorbar=dict(title="This is my colorbar title"))
 ```
 
+### Remove colorbar
+
+```python
+fig.update_coloraxes(showscale=False)
+```
+
 ### When multiple subplots
 
 #### Don't match all axis
