@@ -10,6 +10,8 @@ parent: Python
 - [Interact with an headless chrome](#interact-with-an-headless-chrome)
 - [Obfuscation](#obfuscation)
 - [User profile](#user-profile)
+- [Selenium snippets](#selenium-snippets)
+  - [Scroll to bottom](#scroll-to-bottom)
 
 
 # Nice starting snippet
@@ -120,7 +122,7 @@ Click "inspect", and the browser will show up, fully interactive.
 You may also want to change the resolution of the browser:
 
 ```python
-driver.set_window_size(1920, 1080, driver.window_handles[0])
+driver.set_window_size(1500, 1200, driver.window_handles[0])
 ```
 
 # Obfuscation
@@ -152,4 +154,13 @@ options = webdriver.ChromeOptions()
 options.add_argument("--user-data-dir=C:\\...path to your working directory...\\user_data")
 options.add_argument("--profile-directory=Default")
 driver = webdriver.Chrome(options=options, ...)
+```
+
+
+# Selenium snippets
+
+## Scroll to bottom
+
+```python
+driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 ```
