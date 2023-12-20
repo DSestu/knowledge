@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Selenium
-nav_order: 1
+nav_order: 5
 parent: Python
 ---
 

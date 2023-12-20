@@ -14,3 +14,5 @@ Most complete pages:
 * [Plotly snippets](docs/python/plotly/readme.html)
 
 * [PostgreSQL snippets](docs/postgresql/snippets/readme.html)
+
+* [Selenium tricks](docs/python/selenium/readme.html)
