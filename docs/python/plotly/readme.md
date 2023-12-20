@@ -35,6 +35,7 @@ parent: Python
     - [Change opacity](#change-opacity)
     - [Specific color mapping](#specific-color-mapping)
     - [Change colorbar title](#change-colorbar-title)
+    - [Remove colorbar](#remove-colorbar)
     - [When multiple subplots](#when-multiple-subplots)
       - [Don't match all axis](#dont-match-all-axis)
       - [Show ticks on all subplot's axis](#show-ticks-on-all-subplots-axis)
