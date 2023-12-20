@@ -46,7 +46,7 @@ options.add_argument("--remote-debugging-port=9222")
 
 service = Service(executable_path=binary_path)
 driver = webdriver.Chrome(options=options, service=service)
-driver.set_window_size(1920, 1080, driver.window_handles[0])
+driver.set_window_size(1500, 1200, driver.window_handles[0])
 
 home = "https://www.google.fr"
 driver.get(home)
