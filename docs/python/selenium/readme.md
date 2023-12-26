@@ -164,3 +164,56 @@ driver = webdriver.Chrome(options=options, ...)
 ```python
 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 ```
+
+## Get network requests
+
+Can be useful to gather a stream url for example, or many other things.
+
+```python
+JS_get_network_requests = "var performance = window.performance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;"
+network_requests = driver.execute_script(JS_get_network_requests)
+```
+
+## Extract all m3u8 (stream) urls from a webpage
+
+Using the snippet above.
+
+You can target a more specific stream name if you already know it in advance.
+
+You can use the chrome extension "download HLS Streams" to list streams for exploration before scripting.
+
+```python
+def extract_m3u8(driver: webdriver.Chrome, match_str: str = ".m3u8") -> list[str]:
+    JS_get_network_requests = "var performance = window.performance || window.msPerformance || window.webkitPerformance || {}; var network = performance.getEntries() || {}; return network;"
+    network_requests = driver.execute_script(JS_get_network_requests)
+    return [n["name"] for n in network_requests if match_str in n["name"]]
+```
+
+## Download m3u8 stream as an mp4
+
+Prequisites:
+
+```shell
+pip install m3u8
+pip install m3u8_To_MP4
+```
+
+```python
+# Get the stream
+stream = extract_m3u8(driver, match_str=".m3u8")[0]
+# (...) or a different way of filtering the needed stream than ...[0]
+
+# Parse m3u8
+stream = m3u8.load(stream)
+# Use 480p stream
+playlist = [p for p in stream.playlists if str(p.stream_info.resolution[1]) == "480"][0]
+try:
+    os.remove(driver.title + ".mp4")
+except:
+    pass
+# Download to file
+m3u8_To_MP4.multithread_download(
+    m3u8_uri=playlist.absolute_uri,
+    mp4_file_name=driver.title + ".mp4",
+)
+```
