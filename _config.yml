@@ -9,6 +9,3 @@ aux_links:
 
 search_enabled: true
 color_scheme: dark
-
-plugins:
-  - jekyll-seo-tag
