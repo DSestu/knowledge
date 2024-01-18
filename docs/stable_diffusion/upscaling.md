@@ -55,7 +55,7 @@ Let's consider this base generated image, which is 512x512 (the base resolution)
 Here are some key details:
 
 
-|Distorted car  |Blurry mountains/lights  |Column3  |
+|Distorted car  |Blurry mountains/lights  |Stars  |
 |---------|---------|---------|
 |![](./images/upscaling/base_image_car.jpg)     |   ![](./images/upscaling/base_image_mountains.jpg)      |     ![](./images/upscaling/base_image_stars.jpg)    |
 
