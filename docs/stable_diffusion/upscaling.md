@@ -50,14 +50,14 @@ git checkout batch-processing
 
 Let's consider this base generated image, which is 512x512 (the base resolution).
 
-![](/docs/stable_diffusion/images/upscaling/base_image.png)
+![](./images/upscaling/base_image.png)
 
 Here are some key details:
 
 
 |Distorted car  |Blurry mountains/lights  |Column3  |
 |---------|---------|---------|
-|![](/docs/stable_diffusion/images/upscaling/base_image_car.jpg)     |   ![](/docs/stable_diffusion/images/upscaling/base_image_mountains.jpg)      |     ![](/docs/stable_diffusion/images/upscaling/base_image_stars.jpg)    |
+|![](./images/upscaling/base_image_car.jpg)     |   ![](./images/upscaling/base_image_mountains.jpg)      |     ![](./images/upscaling/base_image_stars.jpg)    |
 
 
 ## Parameters *(baseline)*
@@ -108,17 +108,17 @@ Here the result with said parameters *(and LCM)*:
 
 * Upscaled 1 time x2:
 
-![](/docs/stable_diffusion/images/upscaling/upscaled_1.png)
+![](./images/upscaling/upscaled_1.png)
 
 * Preceding result upscaled again x2:
 
-![](/docs/stable_diffusion/images/upscaling/upscaled_2.png)
+![](./images/upscaling/upscaled_2.png)
 
 As you can see, the generative property of diffusion models are a very great way to generate new details in the upscaling workflow:
 
 |Car  |Mountains  |Stars  |
 |---------|---------|---------|
-|![](/docs/stable_diffusion/images/upscaling/upscaled_2_car.png)     |     ![](/docs/stable_diffusion/images/upscaling/upscaled_2_mountains.png)    |    ![](/docs/stable_diffusion/images/upscaling/upscaled_2_stars.png)     |
+|![](./images/upscaling/upscaled_2_car.png)     |     ![](./images/upscaling/upscaled_2_mountains.png)    |    ![](./images/upscaling/upscaled_2_stars.png)     |
 
 
 ## Additional notes
@@ -129,7 +129,7 @@ You can still inpaint part of the image with the "only masked content" in order 
 
 For example the car was changed here to a BMW:
 
-![](/docs/stable_diffusion/images/upscaling/upscaled_2_car_impainting.png)
+![](./images/upscaling/upscaled_2_car_impainting.png)
 
 ## Large scale impainting
 
@@ -156,7 +156,7 @@ Alternative to the tile Script + controlnet, performs well in Img2Img tasks.
 
 * Use the impaint anything tab to create mask:
 
-![](/docs/stable_diffusion/images/upscaling/SAM.jpg)
+![](./images/upscaling/SAM.jpg)
 
 * Click on regions you want to impaint
 
@@ -174,4 +174,4 @@ Alternative to the tile Script + controlnet, performs well in Img2Img tasks.
 
 Here the result by impainting stars:
 
-![](/docs/stable_diffusion/images/upscaling/impaint_stars.png)
+![](./images/upscaling/impaint_stars.png)
