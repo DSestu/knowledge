@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Selenium
+title: Upscaling methods
 nav_order: 5
 parent: Stable Diffusion
 ---
