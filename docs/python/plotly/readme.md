@@ -68,6 +68,7 @@ pip https://github.com/plotly/Kaleido/releases/download/v0.1.0.post1/kaleido-0.1
 import plotly.io as pio
 ```
 
+
 ---
 
 #### Force notebook renderer
@@ -82,6 +83,22 @@ pio.renderers.default = "notebook"
 
 ```python
 pio.templates.default = "plotly_dark"
+```
+
+---
+
+### Changing default font
+
+```python
+import plotly.io as pio
+import plotly.graph_objects as go
+
+# Create a custom template
+pio.templates["my_template"] = go.layout.Template(
+  layout=dict(font_family="MathJax")
+)
+# Apply the template
+pio.templates.default = "plotly_white+my_template"
 ```
 
 ### Layout patterns
@@ -179,6 +196,17 @@ for data in fig.data:
 ```
 
 ## General figure modification
+
+---
+
+### Format percents in text
+
+```python
+fig.update_traces(
+  # Rounds and add %
+  textemplate="%{text:.2f}%"
+)
+```
 
 ---
 
