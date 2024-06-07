@@ -49,3 +49,44 @@ Some additional informations:
 
 * Everything else from pure spark operations are executed locally.
 
+# Downloading a delta table locally
+
+```python
+# Standard Library
+import os
+
+# Third-party
+import s3fs
+
+from dotenv import load_dotenv
+
+# Application
+from databricks import sql
+
+"""WARNING: Make sure to write single partition parquet (pyspark.DataFrame.repartition(1)).write..."""
+load_dotenv()
+databricks_creds = {
+    "server_hostname": os.environ["DATABRICKS_HOSTNAME"],
+    "http_path": os.environ["DATABRICKS_HTTP_PATH"],
+    "access_token": os.environ["DATABRICKS_ACCESS_TOKEN"],
+}
+
+s3 = s3fs.S3FileSystem()
+connection = sql.connect(**databricks_creds)
+cursor = connection.cursor()
+
+table = "..."
+
+cursor.execute(f"DESCRIBE EXTENDED {table}")
+result = cursor.fetchall()
+cursor.close()
+connection.close()
+
+s3_location = [r.data_type for r in result if r.col_name == "Location"][0]
+print(f"{s3_location=}")
+
+files = [f for f in s3.ls(s3_location) if f.endswith(".parquet")]
+
+# Single partition file
+s3.download(rpath=f"s3://{files[0]}", lpath="./extract.parquet")
+```
