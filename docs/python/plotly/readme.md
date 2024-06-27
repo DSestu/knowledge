@@ -163,10 +163,28 @@ Then, you have to add traces with the `row`, `col` parameters (**starts at 1**)
 
 ```python
 fig.add_trace(
-    px. (or) go. ...,
+    px.(...).data[0] (or) go. ...,
     row=1,
     col=1,
 )
+```
+
+### Change axis labels
+
+```python
+fig['layout']['xaxis']['title']='Label x-axis 1'
+fig['layout']['xaxis2']['title']='Label x-axis 2'
+fig['layout']['yaxis']['title']='Label y-axis 1'
+fig['layout']['yaxis2']['title']='Label y-axis 2'
+```
+
+```python
+label_x = ""
+label_y = textbf("Percent of usage (%)")
+for i in range(max_col):
+    number = str(i) if i > 0 else ""
+    figure["layout"][f"xaxis{number}"]["title"] = label_x
+    figure["layout"][f"yaxis{number}"]["title"] = label_y
 ```
 
 ## Colors
