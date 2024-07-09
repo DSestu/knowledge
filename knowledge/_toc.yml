@@ -45,7 +45,7 @@ parts:
     - file: docs/pentest/shodan.md
     - file: docs/pentest/samba.md
     - file: docs/pentest/misc.md
-  - caption: Pentest
+  - caption: Stable diffusion
     numbered: False
     chapters:
     - file: docs/stable_diffusion/intro.md
