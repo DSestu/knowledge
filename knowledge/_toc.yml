@@ -3,7 +3,51 @@
 
 format: jb-book
 root: intro
-chapters:
-- file: markdown
-- file: notebooks
-- file: markdown-notebooks
+
+parts:
+  - caption: Python
+    numbered: False
+    chapters:
+    - file: docs/python/plotly/plotly.md
+    - file: docs/python/pyspark/pyspark.md
+    - file: docs/python/databricks/databricks.md
+    - file: docs/python/kedro/kedro.md
+    - file: docs/python/selenium/selenium.md
+    - file: docs/python/misc/misc.md
+    - file: docs/python/links/links.md
+  - caption: Data Science
+    numbered: False
+    chapters:
+    - file: docs/data_science/data_manipulation_tricks.md
+    - file: docs/data_science/constraint_programming.md
+    - file: docs/data_science/outlier_detection.md
+    - file: docs/data_science/useful_links.md
+  - caption: PostgreSQL
+    numbered: False
+    chapters:
+    - file: docs/postgresql/snippets.md
+    - file: docs/postgresql/links.md
+  - caption: Linux
+    numbered: False
+    chapters:
+    - file: docs/linux/readme.md
+  - caption: Windows
+    numbered: False
+    chapters:
+    - file: docs/windows/setup.md
+    - file: docs/windows/ffmpeg.md
+    - file: docs/windows/context_managers.md
+    - file: docs/windows/misc.md
+  - caption: Pentest
+    numbered: False
+    chapters:
+    - file: docs/pentest/using_tor.md
+    - file: docs/pentest/shodan.md
+    - file: docs/pentest/samba.md
+    - file: docs/pentest/misc.md
+  - caption: Pentest
+    numbered: False
+    chapters:
+    - file: docs/stable_diffusion/intro.md
+    - file: docs/stable_diffusion/upscaling.md
+      

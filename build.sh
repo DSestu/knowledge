@@ -1,0 +1,1 @@
+jupyter-book clean knowledge/ --all && jupyter-book build knowledge/
