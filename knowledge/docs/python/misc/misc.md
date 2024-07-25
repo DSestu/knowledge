@@ -17,10 +17,53 @@ mamba env config vars set PYTHONPATH=/full/path/to/module # Make sure to use the
 mamba env config vars unset PYTHONPATH # Removes a variable
 ```
 
+
 ## Install poetry from an existing path
 
 ```python
 poetry init    
+```
+
+# GIT
+
+## Purge and clean local .git folder
+
+```bash
+git gc --prune=now
+git repack -Ad
+git prune
+```
+
+```bash
+git gc --prune=now && git repack -Ad && git prune
+```
+
+## Check sanity of local repo
+
+```bash
+git gc --prune=now
+```
+
+## Removing untracked files
+
+for dry run use `-n` parameter
+
+### Remove EVERY untracked file (including gitignored)
+
+```bash
+git clean -fdx
+```
+
+### Remove untracked file (but keep gitignored)
+
+```bash
+git clean -fd
+```
+
+### Remove untracked files (only gitignored ones)
+
+```bash
+git clean -fdX
 ```
 
 # Misc Python snippets
