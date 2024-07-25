@@ -22,6 +22,7 @@ parts:
     - file: docs/data_science/constraint_programming.md
     - file: docs/data_science/outlier_detection.md
     - file: docs/data_science/useful_links.md
+    - file: docs/data_science/savitzky_golay_filter.ipynb
   - caption: PostgreSQL
     numbered: False
     chapters:
