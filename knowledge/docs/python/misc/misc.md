@@ -1,5 +1,22 @@
 # Misc snippets
 
+# Profiling functions
+
+Get a flamegraph of functions inside a notebook
+
+```bash
+pip install snakeviz
+```
+
+In the notebook
+
+```python
+%load_ext snakeviz
+%snakeviz_config -h localhost -p 8888
+%snakeviz myfunctions
+```
+
+
 # Environment setup
 
 ## Create truly clean conda env
