@@ -45,3 +45,4 @@ html:
   use_issues_button: false
   use_repository_button: true
   use_multitoc_numbering: false
+  favicon: "logo.ico"
