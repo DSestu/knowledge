@@ -16,6 +16,168 @@ In the notebook
 %snakeviz myfunctions
 ```
 
+# LRU caching with custom hashing function
+
+You may be in the situation where you want to have a cache for function calls.
+
+A specific case of those caches is called LRU, which stands for Least Recent Unit.
+
+Least Recent Unit caches have a maximum size. Once the cache is full, the next cached element will involve freeing the least used element in the cache.
+
+This can easily be done with a native python decorator
+
+```python
+@lru_cache(maxsize=128)
+```
+
+How does this work?
+
+This is simply a save system using a dictionary, with a litle bit of sugar to know which key was the least used.
+
+The dictionnary is used as the following:
+
+* The function is called with arguments
+
+* The output of the function is computed if not in cache
+
+* The arguments and the output are stored in the dictionnary. **The key used to store in the dictionnary is a tuple of the arguments, and the value is the output of the function**
+
+> **The issue here is that the key of a dictionnary need to be hashable!**
+
+**BUT**
+
+Some python objects are not hashable! This means that they can't be cached that way.
+
+There are 2 solutions:
+
+1. If an argument is a custom class
+
+You can define the `.__hash__()` function in your class, and use the standard `@lru_cache`
+
+```python
+class MyClass:
+    def __init__(self, a: int, b: int) -> None:
+        self.a = a
+        self.b = b
+
+    def __hash__(self) -> str:
+        return str(self.a) + str(self.b)
+
+@lru_cache(maxsize=128)
+def get_sum(the_class: MyClass) -> int:
+    return the_class.a + the_class.b
+
+my_class = MyClass(a=1, b=2)
+
+for _ in range(1000):
+    get_sum(the_class=my_class)
+
+```
+
+2. If you aren't using a custom class, and so can't override the `.__hash__()` function.
+
+This is for example the case of a function that uses operations on a numpy array.
+
+This is a case that I encountered while coding a Connect4 bot. By searching recursively board states, I may encounter multiple times the same board. I don't want to compute scores etc when I already did.
+
+So, I need to cache the result of my function, which has the board as an argument.
+
+But a Numpy array don't have a `.__hash__()`, so I need to provide a custom hashing function that will transform each board in a unique hash.
+
+The hashing function can be whatever, but need to have 2 specific properties:
+
+* The hash has to be deterministic
+
+* One hash can correspond only to one board state
+
+The way I do it is the following:
+
+```python
+import numpy as np
+
+def hash_array(arr: np.ndarray) -> int:
+    """Used to hash numpy array so we can cache scores inside a dictionary"""
+    _arr = arr.copy()
+    _arr.flags.writeable = False
+    return hash(_arr.tobytes())
+```
+
+And I make an object that will be used as a cache:
+
+```python
+from collections import OrderedDict
+
+class LRUCacheDict:
+    def __init__(self, maxsize=128):
+        self.cache = OrderedDict()
+        self.maxsize = maxsize
+
+    def get(self, key):
+        try:
+            value = self.cache.pop(key)
+            # Reinsert the key to mark it as recently used
+            self.cache[key] = value
+            return value
+        except KeyError:
+            return None
+
+    def put(self, key, value):
+        try:
+            # Remove the key if it already exists to update its position
+            self.cache.pop(key)
+        except KeyError:
+            if len(self.cache) >= self.maxsize:
+                # Pop the first item (the least recently used)
+                self.cache.popitem(last=False)
+        self.cache[key] = value
+
+    def __repr__(self):
+        return repr(self.cache)
+
+    def __len__(self):
+        return len(self.cache)
+
+    def __contains__(self, key):
+        return key in self.cache
+
+    def clear(self):
+        self.cache.clear()
+```
+
+And I define the decorator that will use the cache
+
+```python
+from functools import wraps
+
+def custom_lru_cache(cache: LRUCacheDict):
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            _hash = hash_array(*args)
+            value = cache.get(_hash)
+            if value is not None:
+                return value
+            else:
+                value = func(*args, **kwargs)
+                cache.put(_hash, value)
+                return value
+        return wrapper
+    return decorator
+```
+
+Now I can use it the following way:
+
+```python
+my_array = np.ones(shape=(3, 3))
+
+@custom_lru_cache(LRUCacheDict(maxsize=128))
+def get_sum(arr: np.ndarray) -> float:
+    return arr.sum()
+
+for _ in range(1000):
+    get_sum(my_array)
+```
+
 
 # Environment setup
 
