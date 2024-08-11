@@ -1,5 +1,12 @@
 # Misc snippets
 
+# Auto-reload an app with a file watchdog
+
+```bash
+pip install pytest-watch
+ptw --runner "my command that will be re-run if a file change file.py"
+```
+
 # Profiling functions
 
 Get a flamegraph of functions inside a notebook
