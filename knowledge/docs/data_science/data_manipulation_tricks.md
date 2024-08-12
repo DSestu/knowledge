@@ -2,6 +2,20 @@
 
 # Data manipulation tricks
 
+## Recursively rename columns on a Pandas DataFrame 
+
+```python
+df.pipe(
+    lambda dataframe: functools.reduce(
+        lambda df, string: df.assign(
+            window_type=lambda data: data["window_type"].str.replace(string, "")
+        ),
+        ["_CONDITIONS", "_DEFINITIONS"],
+        dataframe,
+    )
+)
+```
+
 ## Geographical K-nearest neighbors from lat/lon
 
 Let's say we have a pandas dataframe with latitude (lat) and longitude (lon) columns.
