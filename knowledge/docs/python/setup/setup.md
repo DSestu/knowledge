@@ -1,5 +1,11 @@
 # Setup
 
+# Ready Python template
+
+You can clone my handmade python project template, which handles devenv / docker / uv / pre-commit / and code checking github actions.
+
+[https://github.com/DSestu/python-project-template](https://github.com/DSestu/python-project-template)
+
 ## Using UV as a package manager
 
 [https://docs.astral.sh/uv/getting-started/installation/](https://docs.astral.sh/uv/getting-started/installation/)
