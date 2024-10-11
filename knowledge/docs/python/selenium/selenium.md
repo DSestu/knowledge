@@ -3,6 +3,8 @@
 # Nice starting snippet
 
 ```python
+import os
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -18,6 +20,9 @@ service = Service(executable_path=binary_path)
 # driver = webdriver.Chrome(options=options, service=service)
 
 
+current_path = os.getcwd()
+chrome_user_data = os.path.join(current_path, "chrome_user_data")
+
 options = webdriver.ChromeOptions()
 options.add_argument("--no-sandbox")
 options.add_argument("--headless")
@@ -25,8 +30,7 @@ options.add_argument("--disable-dev-shm-usage")
 options.add_experimental_option("excludeSwitches", ["enable-automation"])
 options.add_experimental_option("useAutomationExtension", False)
 
-options.add_argument("--user-data-dir=C:\\ YOUR PROJECT PATH \\user_data")
-# options.add_argument("--user-data-dir=/mnt/c/ YOUR PROJECT PATH /user_data") If you use WSL
+options.add_argument(f"--user-data-dir={chrome_user_data}")
 options.add_argument("--profile-directory=Default")
 options.add_argument("--disable-dev-shm-usage")
 # options.add_argument("--disable-extensions")
@@ -144,6 +148,44 @@ driver = webdriver.Chrome(options=options, ...)
 
 
 # Selenium snippets
+
+## Highight element for 5 seconds with red border
+
+```python
+def highlight_element(driver: WebDriver, element: WebElement) -> None:
+    """
+    Highlights an element in the browser for 5 seconds with a red border.
+
+    Args:
+    driver: WebDriver instance
+    element: WebElement to highlight
+    """
+    import threading
+    import time
+
+    original_style = element.get_attribute("style")
+
+    # Apply the highlight style
+    driver.execute_script(
+        """
+        arguments[0].style.border = '3px solid red';
+        arguments[0].style.transition = 'border 0.3s ease-in-out';
+    """,
+        element,
+    )
+
+    def restore_style():
+        # Wait for 5 seconds
+        time.sleep(5)
+
+        # Restore the original style
+        driver.execute_script(
+            f"arguments[0].setAttribute('style', '{original_style}');", element
+        )
+
+    # Start a new thread to handle the delay and style restoration
+    threading.Thread(target=restore_style, daemon=True).start()
+```
 
 ## Scroll to bottom
 
