@@ -152,6 +152,9 @@ driver = webdriver.Chrome(options=options, ...)
 ## Highight element for 5 seconds with red border
 
 ```python
+from selenium.webdriver.remote.webdriver import WebDriver
+from selenium.webdriver.remote.webelement import WebElement
+
 def highlight_element(driver: WebDriver, element: WebElement) -> None:
     """
     Highlights an element in the browser for 5 seconds with a red border.
