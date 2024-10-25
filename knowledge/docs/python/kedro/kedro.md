@@ -1,5 +1,34 @@
 # Kedro 
 
+# Using Kedro with UV
+
+1. Init the virtual environment
+
+```bash
+uv venv
+source .venv/bin/activate
+```
+
+2. Edit the kedro's `pyproject.toml`
+
+```toml
+######## Comment those lines !
+
+# dynamic = [ "dependencies", "version",]
+
+# [tool.setuptools.dynamic.dependencies]
+# file = "requirements.txt"
+
+######## Add this below [project]
+version = "1.0.0"
+```
+
+3. Add `requirements.txt` dependencies to the `pyproject.toml`
+
+```bash
+uv add -r requirements.txt
+```
+
 # Debugging kedro pipelines
 
 ## Access to kedro from a notebook
