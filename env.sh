@@ -1,0 +1,1 @@
+export JUPYTER_CONFIG_DIR="./jupyter_config"
