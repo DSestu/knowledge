@@ -21,8 +21,7 @@ sphinx:
 # Disable re-execution of notebooks on each build.
 # See https://jupyterbook.org/content/execute.html
 execute:
-  execute_notebooks: cache
-  cache: ".jupyter_cache"
+  execute_notebooks: off
 
 # Define the name of the latex output file for PDF builds
 latex:
@@ -46,3 +45,6 @@ html:
   use_repository_button: true
   use_multitoc_numbering: false
   favicon: "logo.ico"
+  
+  # Plotly
+  extra_footer: <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
