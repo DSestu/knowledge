@@ -67,6 +67,14 @@ pio.templates.default = "plotly_white+my_template"
 
 ---
 
+## Centered title
+
+```
+p.update_layout(title_x=0.5)
+```
+
+---
+
 ## Supress margins
 
 ```
