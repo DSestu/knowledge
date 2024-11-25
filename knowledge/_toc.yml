@@ -21,10 +21,11 @@ parts:
     numbered: False
     chapters:
     - file: docs/data_science/data_manipulation_tricks.md
+    - file: docs/data_science/savitzky_golay_filter.ipynb
+    - file: docs/data_science/bivariate_analysis.ipynb
     - file: docs/data_science/constraint_programming.md
     - file: docs/data_science/outlier_detection.md
     - file: docs/data_science/useful_links.md
-    - file: docs/data_science/savitzky_golay_filter.ipynb
   - caption: PostgreSQL
     numbered: False
     chapters:
