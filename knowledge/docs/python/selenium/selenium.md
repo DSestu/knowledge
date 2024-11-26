@@ -5,6 +5,11 @@
 ```python
 import os
 
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -148,6 +153,18 @@ driver = webdriver.Chrome(options=options, ...)
 
 
 # Selenium snippets
+
+## Wait until an element appear, with timeout
+
+```python
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+element = WebDriverWait(driver, 10).until(
+    EC.presence_of_element_located((By.ID, "myDynamicElement"))
+)
+```
 
 ## Highight element for 5 seconds with red border
 
