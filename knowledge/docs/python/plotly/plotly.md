@@ -100,6 +100,23 @@ p.update_layout(legend=floating_legend)
 
 ---
 
+## Centered horizontal legend
+
+```
+p.update_layout(
+    legend=dict(
+      orientation="h",
+      yanchor="top",
+      y=1.05,  # 0.98,
+      xanchor="center",
+      x=0.5,
+      title=None,
+  ),
+)
+```
+
+---
+
 ## No margins & floating legends
 
 ```
