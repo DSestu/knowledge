@@ -18,3 +18,14 @@ irm https://massgrave.dev/get | iex
 4. Install AtlasOS
 
 (https://atlasos.net/)[https://atlasos.net/]
+
+## WSL
+
+Set WSL to see the same interfaces as Windows
+
+> C:/Users/{user}/.wslconfig
+```
+[wsl2]
+localhostforwarding=true
+networkingMode=mirrored
+```
