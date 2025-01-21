@@ -16,6 +16,41 @@ df.pipe(
 )
 ```
 
+## Geographical DBScan, and centroid estimation
+
+```python
+import numpy as np
+from shapely import MultiPoint
+from sklearn.cluster import DBSCAN
+
+locations: pl.DataFrame
+
+# Main variable for DBScan: the kernel size (here roughly in km's)
+spatial_kernel = 60 # km
+
+# Estimation of clusters
+epsilon = spatial_kernel / kms_per_radian
+dbscan = DBSCAN(epsilon, min_samples=1, algorithm="ball_tree", metric="haversine").fit(
+    np.radians(locations[["latitude", "longitude"]])
+)
+
+# Enrich original dataset with cluster labels
+locations = locations.with_columns(
+    pl.Series(dbscan.labels_, dtype=pl.String).alias("cluster")
+)
+
+# (optional) For each cluster, get the geographical centroid
+centroids = []
+for (cluster,), _ in unique_locations.group_by("cluster"):
+    lat, lon = MultiPoint(
+        np.array(_[["latitude_sencrop", "longitude_sencrop"]])
+    ).centroid.coords.xy
+    lat, lon = [_[0] for _ in [lat, lon]]
+
+    centroids.append({"cluster": cluster, "lat": lat, "lon": lon})
+centroids = pl.DataFrame(centroids)
+```
+
 ## Geographical K-nearest neighbors from lat/lon
 
 Let's say we have a pandas dataframe with latitude (lat) and longitude (lon) columns.
