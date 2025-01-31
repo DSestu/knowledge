@@ -30,7 +30,6 @@ pip install https://github.com/plotly/Kaleido/releases/download/v0.1.0.post1/kal
 import plotly.io as pio
 ```
 
-
 ---
 
 ## Force notebook renderer
@@ -100,7 +99,7 @@ p.update_layout(legend=floating_legend)
 
 ---
 
-## Centered horizontal legend
+## Centered horizontal legend with transparent background
 
 ```
 p.update_layout(
@@ -111,6 +110,7 @@ p.update_layout(
       xanchor="center",
       x=0.5,
       title=None,
+      bgcolor="rgba(0,0,0,0)",
   ),
 )
 ```
@@ -257,7 +257,6 @@ for trace in fig.data:
   ])
 ```
 
-
 ---
 
 ## Changing ticks spacing
@@ -277,7 +276,6 @@ p.update_xaxes(
     tick
 )
 ```
-
 
 ---
 
