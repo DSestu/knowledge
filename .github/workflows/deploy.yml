@@ -58,7 +58,7 @@ jobs:
       # Deploy the book's HTML to GitHub Pages
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v3
 
       - name: Minimize uv cache
         run: uv cache prune --ci
