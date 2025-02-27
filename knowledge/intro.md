@@ -1,4 +1,4 @@
-# David Sestu's Knowledge repo
+# David Sestu Knowledge repo
 
 This repository contains various bits of knowledge that I find helpful for my work.
 
@@ -16,9 +16,9 @@ This repository aims to make the development experience smooth, efficient, and c
 
 2. Prefect Windows scheduler
 
-[https://github.com/DSestu/Prefect-Windows-scheduler](https://github.com/DSestu/Prefect-Windows-scheduler)
+[https://github.com/DSestu/Prefect-simple-task-scheduler](https://github.com/DSestu/Prefect-simple-task-scheduler)
 
-This project is aimed at providing a simple template for running croned tasks on Windows.
+This project is aimed at providing a simple template for running croned tasks on Windows/Linux.
 
 The Windows task scheduler can be a bit of a pain to configure if you have a lot of tasks to run.
 
