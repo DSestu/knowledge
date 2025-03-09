@@ -57,4 +57,5 @@ parts:
     - file: docs/stable_diffusion/upscaling.md
   - caption: Games
     numbered: False
+    chapters:
     - file: docs/games/mh_wilds/mh_wilds.md
