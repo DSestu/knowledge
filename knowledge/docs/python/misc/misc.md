@@ -185,7 +185,6 @@ for _ in range(1000):
     get_sum(my_array)
 ```
 
-
 # Environment setup
 
 ## Create truly clean conda env
@@ -193,6 +192,7 @@ for _ in range(1000):
 ```python
 conda env create -n ENV_NAME python=3.9 --no-default-packages
 ```
+
 ## Adding custom *(local)* packages to a specific conda environment
 
 Works with `conda` or `mamba`.
@@ -203,7 +203,6 @@ mamba env config vars set PYTHONPATH=/full/path/to/module # Make sure to use the
 mamba env config vars unset PYTHONPATH # Removes a variable
 ```
 
-
 ## Install poetry from an existing path
 
 ```python
@@ -211,6 +210,16 @@ poetry init
 ```
 
 # GIT
+
+## Pushing to both Github and Huggingface
+
+```bash
+git remote add origin git@(...).git
+git remote set-url --push origin git@(...).git
+git remote set-url --add --push origin https://{user}:{token}@huggingface.co/spaces/{user}/{space}
+git remote -v
+git push --set-upstream origin main
+```
 
 ## Purge and clean local .git folder
 
