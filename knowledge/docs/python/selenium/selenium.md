@@ -108,6 +108,59 @@ for i in tqdm(range(0, len(all_urls) + 1, SCRAPE_CHUNK_PAGES)):
 all_data = list(itertools.chain.from_iterable(all_data))
 ```
 
+### Wrapping it up in a function
+
+```python
+from typing import Callable
+
+
+async def scrap_one_page(url: str, **kwargs) -> None: ...
+
+
+async def chunked_scrap(
+    fn: Callable,
+    chunk_iterator: list,
+    chunk_key: str,
+    chunk_size: int = 60,
+    **kwargs,
+) -> list:
+    """
+    Asynchronously scrape data in chunks from an iterator using a provided function.
+
+    Args:
+        fn (Callable): The async function to call for each element in the chunk.
+        chunk_iterator (list): The list of elements to be processed.
+        chunk_key (str): The key name to pass each element to the function.
+        chunk_size (int, optional): Number of elements to process concurrently. Defaults to 60.
+        **kwargs: Additional keyword arguments to pass to the scraping function.
+
+    Returns:
+        list: Aggregated results from all processed chunks.
+    """
+    from tqdm import tqdm
+
+    all_data = []
+    for i in tqdm(range(0, len(all_data) + 1, chunk_size)):
+        all_data.extend(
+            await asyncio.gather(
+                *[
+                    fn(**{chunk_key: element}, **kwargs)
+                    for element in chunk_iterator[i : i + chunk_size]
+                ]
+            )
+        )
+    return all_data
+
+
+all_results = await chunked_scrap(
+    fn=scrap_one_page,  # <- scrap_one_page has "url" arg
+    chunk_key="url",  # <- we pass the name of the arg on which we will parallel scrap
+    chunk_iterator=all_urls,  # The list of urls that we will scrap
+    browser=browser,  # <- the browser instance that we will use to scrap
+    chunk_size=2,  # <- the number of urls that we will scrap at the same time
+)
+```
+
 # Selenium
 
 # Nice starting snippet
