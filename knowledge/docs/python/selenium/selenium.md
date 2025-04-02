@@ -81,7 +81,7 @@ with Chrome(options=options) as browser:
 
 ## Scraping multiple pages at once
 
-This approach makes uses of semaphores so the processing of urls is not chunked, but completely asynchronous, while limiting the number of concurrent tasks at the same time.
+This approach makes use of semaphores so the processing of URLs is not chunked, but completely asynchronous, while limiting the number of concurrent tasks at the same time.
 
 ```python
 import asyncio
@@ -92,7 +92,7 @@ from tqdm import tqdm
 
 async def scrap_one_page(url: str, **kwargs) -> None: ...
 
-async def chunked_scrap(
+async def parallel_scrap(
     fn: Callable,
     chunk_iterator: list,
     chunk_key: str,
@@ -132,7 +132,7 @@ async def chunked_scrap(
     return all_data
 
 
-all_results = await chunked_scrap(
+all_results = await parallel_scrap(
     fn=scrap_one_page,  # <- scrap_one_page has "url" arg
     chunk_key="url",  # <- we pass the name of the arg on which we will parallel scrap
     chunk_iterator=all_urls,  # The list of urls that we will scrap
