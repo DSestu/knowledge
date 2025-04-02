@@ -81,74 +81,54 @@ with Chrome(options=options) as browser:
 
 ## Scraping multiple pages at once
 
+This approach makes uses of semaphores so the processing of urls is not chunked, but completely asynchronous, while limiting the number of concurrent tasks at the same time.
+
 ```python
-import itertools
-from typing import Any
+import asyncio
+from typing import Any, Callable, List
 
 from tqdm import tqdm
 
-SCRAPE_CHUNK_PAGES = 60
-
-all_urls = [...]
-
-
-async def scrape_individual_page(browser: Chrome, url: str) -> Any:
-    page = await browser.get_page()
-    await page.go_to(url)
-    return ...
-
-
-all_data = []
-for i in tqdm(range(0, len(all_urls) + 1, SCRAPE_CHUNK_PAGES)):
-    chunk = all_urls[i : i + SCRAPE_CHUNK_PAGES]
-    data_chunk = await asyncio.gather(
-        *[scrape_individual_page(browser, url) for url in chunk]
-    )
-    all_data.extend(data_chunk)
-all_data = list(itertools.chain.from_iterable(all_data))
-```
-
-### Wrapping it up in a function
-
-```python
-from typing import Callable
-
 
 async def scrap_one_page(url: str, **kwargs) -> None: ...
-
 
 async def chunked_scrap(
     fn: Callable,
     chunk_iterator: list,
     chunk_key: str,
-    chunk_size: int = 60,
+    max_concurrent: int = 60,
     **kwargs,
-) -> list:
+) -> List[Any]:
     """
-    Asynchronously scrape data in chunks from an iterator using a provided function.
+    Asynchronously scrape data with a maximum number of concurrent tasks.
 
     Args:
-        fn (Callable): The async function to call for each element in the chunk.
+        fn (Callable): The async function to call for each element in the iterator.
         chunk_iterator (list): The list of elements to be processed.
         chunk_key (str): The key name to pass each element to the function.
-        chunk_size (int, optional): Number of elements to process concurrently. Defaults to 60.
+        max_concurrent (int, optional): Maximum number of concurrent tasks. Defaults to 60.
         **kwargs: Additional keyword arguments to pass to the scraping function.
 
     Returns:
-        list: Aggregated results from all processed chunks.
+        list: Aggregated results from all processed elements.
     """
-    from tqdm import tqdm
-
+    semaphore = asyncio.Semaphore(max_concurrent)
     all_data = []
-    for i in tqdm(range(0, len(chunk_iterator) + 1, chunk_size)):
-        all_data.extend(
-            await asyncio.gather(
-                *[
-                    fn(**{chunk_key: element}, **kwargs)
-                    for element in chunk_iterator[i : i + chunk_size]
-                ]
-            )
-        )
+    tasks = []
+
+    async def process_item(element):
+        async with semaphore:
+            return await fn(**{chunk_key: element}, **kwargs)
+
+    # Create all tasks
+    for element in chunk_iterator:
+        tasks.append(process_item(element))
+
+    # Process tasks with progress bar
+    for task in tqdm(asyncio.as_completed(tasks), total=len(tasks)):
+        result = await task
+        all_data.append(result)
+
     return all_data
 
 
@@ -157,7 +137,7 @@ all_results = await chunked_scrap(
     chunk_key="url",  # <- we pass the name of the arg on which we will parallel scrap
     chunk_iterator=all_urls,  # The list of urls that we will scrap
     browser=browser,  # <- the browser instance that we will use to scrap
-    chunk_size=2,  # <- the number of urls that we will scrap at the same time
+    max_concurrent=2,  # <- the number of urls that we will scrap at the same time
 )
 ```
 
