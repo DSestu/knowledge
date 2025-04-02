@@ -1,3 +1,113 @@
+# Pydoll is king, use it instead of selenium
+
+## Nice starting snippet
+
+```python
+import asyncio
+import os
+
+from pydoll.browser.chrome import Chrome
+from pydoll.browser.options import Options
+from pydoll.browser.page import Page
+from pydoll.constants import By
+from pydoll.element import WebElement
+
+async def highlight(self, element: WebElement, time: int = 5) -> None:
+    """
+    Temporarily highlight a web element by adding a red border and then restoring its original style.
+
+    Args:
+        element (WebElement): The web element to highlight.
+        time (int, optional): Duration of the highlight in seconds. Defaults to 5.
+
+    Briefly draws attention to a specific web element by adding a red border with a smooth transition,
+    then restores the element's original styling after a specified time interval.
+    """
+    original_style = element.get_attribute("style")
+    await page.execute_script(
+        """
+    argument.style.border = '3px solid red';
+    argument.style.transition = 'border 0.3s ease-in-out';
+    """,
+        element,
+    )
+    await asyncio.sleep(time)
+
+    await page.execute_script(
+        f"""
+        argument.setAttribute('style', '{original_style}');
+        """,
+        element,
+    )
+
+
+Page.highlight = highlight
+
+def get_options(
+    headless: bool = False,
+    chrome_user_data: str = os.path.join(os.getcwd(), "chrome_user_data"),
+) -> Options:
+    """
+    Configure and return Chrome WebDriver options for web automation.
+
+    Args:
+        headless (bool, optional): Whether to run Chrome in headless mode. Defaults to False.
+        chrome_user_data (str, optional): Path to Chrome user data directory.
+            Defaults to a 'chrome_user_data' directory in the current working directory.
+
+    Returns:
+        Options: Configured Chrome WebDriver options with specific settings for web scraping.
+    """
+    options = Options()
+    if headless:
+        options.add_argument("--headless")
+    options.add_argument("--mute-audio")
+    options.add_argument("--disable-dev-shm-usage")
+
+    options.add_argument(f"--user-data-dir={chrome_user_data}")
+    options.add_argument("--profile-directory=Default")
+    return options
+
+
+browser = Chrome(options=options)
+await browser.start()
+page = await browser.get_page()
+# or
+with Chrome(options=options) as browser:
+    await browser.start()
+    page = await browser.get_page()
+
+```
+
+## Scraping multiple pages at once
+
+```python
+import itertools
+from typing import Any
+
+from tqdm import tqdm
+
+SCRAPE_CHUNK_PAGES = 60
+
+all_urls = [...]
+
+
+async def scrape_individual_page(browser: Chrome, url: str) -> Any:
+    page = await browser.get_page()
+    await page.go_to(url)
+    return ...
+
+
+all_data = []
+for i in tqdm(range(0, len(all_urls) + 1, SCRAPE_CHUNK_PAGES)):
+    chunk = all_urls[i : i + SCRAPE_CHUNK_PAGES]
+    data_chunk = await asyncio.gather(
+        *[scrape_individual_page(browser, url) for url in chunk]
+    )
+    all_data.extend(data_chunk)
+all_data = list(itertools.chain.from_iterable(all_data))
+```
+
 # Selenium
 
 # Nice starting snippet
@@ -150,7 +260,6 @@ options.add_argument("--user-data-dir=C:\\...path to your working directory...\\
 options.add_argument("--profile-directory=Default")
 driver = webdriver.Chrome(options=options, ...)
 ```
-
 
 # Selenium snippets
 
