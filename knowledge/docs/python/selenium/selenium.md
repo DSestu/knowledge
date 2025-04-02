@@ -140,7 +140,7 @@ async def chunked_scrap(
     from tqdm import tqdm
 
     all_data = []
-    for i in tqdm(range(0, len(all_data) + 1, chunk_size)):
+    for i in tqdm(range(0, len(chunk_iterator) + 1, chunk_size)):
         all_data.extend(
             await asyncio.gather(
                 *[
