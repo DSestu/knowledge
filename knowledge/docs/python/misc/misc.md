@@ -1,5 +1,39 @@
 # Misc snippets
 
+# Making Synchronous code like asynchronous with threads
+
+The following code will run for 5 seconds and then print "Finished sleeping" both at the same time
+
+```python
+import asyncio
+import functools
+import time
+from concurrent.futures import ThreadPoolExecutor
+
+# Global executor that can be reused
+thread_pool = ThreadPoolExecutor()
+
+
+def make_async(func: callable) -> callable:
+    """Decorator to convert any sync function to async function"""
+
+    @functools.wraps(func)
+    async def wrapper(*args: tuple, **kwargs: dict) -> any:
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(thread_pool, lambda: func(*args, **kwargs))
+
+    return wrapper
+
+
+@make_async
+def sleep(n):
+    time.sleep(n)
+    print("Finished sleeping")
+
+
+await asyncio.gather(sleep(5), sleep(5))
+```
+
 # Auto-reload an app with a file watchdog
 
 ```bash
