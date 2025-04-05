@@ -24,7 +24,7 @@ async def highlight(self, element: WebElement, time: int = 5) -> None:
     then restores the element's original styling after a specified time interval.
     """
     original_style = element.get_attribute("style")
-    await page.execute_script(
+    await self.execute_script(
         """
     argument.style.border = '3px solid red';
     argument.style.transition = 'border 0.3s ease-in-out';
@@ -33,7 +33,7 @@ async def highlight(self, element: WebElement, time: int = 5) -> None:
     )
     await asyncio.sleep(time)
 
-    await page.execute_script(
+    await self.execute_script(
         f"""
         argument.setAttribute('style', '{original_style}');
         """,
@@ -72,10 +72,7 @@ def get_options(
 browser = Chrome(options=options)
 await browser.start()
 page = await browser.get_page()
-# or
-with Chrome(options=options) as browser:
-    await browser.start()
-    page = await browser.get_page()
+# await browser.__aexit__(exc_tb="", exc_type="", exc_val="")
 
 ```
 
