@@ -138,6 +138,26 @@ all_results = await parallel_scrap(
 )
 ```
 
+## Asynchronous parallel download
+
+```python
+from pathlib import Path
+from tqdm import tqdm
+
+destination_folder = Path(...)
+media_url = "https://..."
+media_name = "(...).ext"
+
+async with httpx.AsyncClient() as client:
+    async with client.stream("GET", media_url) as r:
+        total_size = int(r.headers.get("content-length", 0))
+        with tqdm(total=total_size, unit="B", unit_scale=True) as pbar:
+            with open(destination_folder / media_name, "wb") as f:
+                async for chunk in r.aiter_bytes(chunk_size=8192):
+                    pbar.update(len(chunk))
+                    f.write(chunk)
+```
+
 # Selenium
 
 # Nice starting snippet
