@@ -158,6 +158,16 @@ async with httpx.AsyncClient() as client:
                     f.write(chunk)
 ```
 
+## Bypassing devtools restrictions
+
+Some website block the ability to open developer options.
+
+This can be caused by multiple ways. The most common one is nullified by executing this snippet:
+
+```python
+await page.execute_script("javascript:DisableDevtool.isSuspend = true")
+```
+
 # Selenium
 
 # Nice starting snippet
