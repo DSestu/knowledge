@@ -10,7 +10,7 @@ parts:
     chapters:
     - file: docs/python/setup/setup.md
     - file: docs/python/plotly/plotly.md
-    - file: docs/python/pyspark/pyspark.md
+    # - file: docs/python/pyspark/pyspark.md
     - file: docs/python/databricks/databricks.md
     - file: docs/python/kedro/kedro.md
     - file: docs/python/selenium/selenium.md
