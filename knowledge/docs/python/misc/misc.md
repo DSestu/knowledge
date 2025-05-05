@@ -1,5 +1,23 @@
 # Misc snippets
 
+# Reading environment file and modifying env for single command
+
+```bash
+env $(cat <.env-file> | grep -v "#" | xargs) <command>
+```
+
+What does this do ?
+
+* `env` modifies the environment variables for a single command. It takes args like `ENV_VAR1=a ENV_VAR2=b`
+
+* `$(...)` takes the stdout of the `...` command to inject it as a string.
+
+* `cat` OFC stdout the content of the file
+
+* `grep -v "#"` removes every line that is commented
+
+* `xargs` takes the output of grep an normalize its whitespaces etc so it passes each env row as `ENV_VAR1=a ENV_VAR2=b` etc
+
 # Making Synchronous code like asynchronous with threads
 
 The following code will run for 5 seconds and then print "Finished sleeping" both at the same time
