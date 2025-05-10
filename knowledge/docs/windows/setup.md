@@ -39,6 +39,11 @@ In Powershell:
 ```powershell
 irm "https://christitus.com/win" | iex
 ```
+## Mounting SFTP as a drive on Windows
+
+Using [WinFsp](https://github.com/billziss-gh/winfsp) and [SSHFS-Win](https://github.com/billziss-gh/sshfs-win) together, you can map network drives over SFTP to Windows Explorer.
+
+Additionally, you can use [sshfs-win-manager](https://github.com/evsar3/sshfs-win-manager), a GUI tool to manage your connections, together with WinFsp and SSHFS-Win.
 
 ## WSL
 
