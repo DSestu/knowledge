@@ -274,6 +274,16 @@ poetry init
 
 # GIT
 
+## Permanently ignore changes on a file
+
+In some cases we don't want to gitignore a file. This can happen if you work with multiple people, and an IDE extension always creates a file. The file creation is only happenning to you, and you don't want to add too much pollution in the gitignore.
+
+In this case, you can permanently ignore the change of a file with the following snippet
+
+```bash
+git update-index --assume-unchanged FILE
+```
+
 ## Pushing to both Github and Huggingface
 
 ```bash
