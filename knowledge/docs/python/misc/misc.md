@@ -284,6 +284,8 @@ In this case, you can permanently ignore the change of a file with the following
 git update-index --assume-unchanged FILE
 ```
 
+OR, edit `.git/info/exclude` and add the path of the excluded file.
+
 ## Pushing to both Github and Huggingface
 
 ```bash
