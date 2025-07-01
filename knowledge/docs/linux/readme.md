@@ -1,5 +1,18 @@
 # Tools
 
+# Execute arbitrary commands when file change
+
+https://eradman.com/entrproject/
+
+Do something when a file in a subfolder changes
+
+The `-c` arg clears the screen everytime.
+
+```bash
+find . -type f -print0 | xargs -0 ls -d | entr -rc git status
+```
+
+
 # Disk usage analyzer 
 
 > **[baobab](https://doc.ubuntu-fr.org/baobab)**
