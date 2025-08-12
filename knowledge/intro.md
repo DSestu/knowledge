@@ -38,11 +38,12 @@ A streamlined solution for scheduling and managing cron-like tasks on Windows an
 
 A personal collection of recipes and cooking knowledge, organized and version-controlled for easy access and sharing.
 
-### 🎮 MH Wilds Tools
+### 🎮 MH Wilds Armor Optimizer
 
 **[github.com/DSestu/MH-Wilds-Tools](https://github.com/DSestu/MH-Wilds-Tools)**
 
-Gaming utilities and tools, likely related to Monster Hunter Wilds or similar gaming applications.
+A specialized armor optimization tool for Monster Hunter Wilds. This project leverages Google OR-Tools to calculate the most efficient equipment combinations based on user-selected skills, priorities, and weapon types. Features include skill selection and prioritization, equipment slot optimization, charm and decoration integration, and complete loadout recommendations. The app is built with Gradio for an interactive user experience.
+[Source](https://github.com/DSestu/MH-Wilds-Tools)
 
 ### 📚 Knowledge Repository
 
