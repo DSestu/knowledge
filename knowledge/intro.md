@@ -36,6 +36,8 @@ A streamlined solution for scheduling and managing cron-like tasks on Windows an
 
 **[github.com/DSestu/recettes-cuisine](https://github.com/DSestu/recettes-cuisine)**
 
+**[Live site](https://dsestu.github.io/recettes-cuisine/)**
+
 A personal collection of recipes and cooking knowledge, organized and version-controlled for easy access and sharing.
 
 ### 🎮 MH Wilds Armor Optimizer
