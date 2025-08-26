@@ -1,5 +1,11 @@
 # Tools
 
+# Debian, restart trackpad service
+
+```bash
+sudo modprobe -r psmouse && sudo modprobe psmouse
+```
+
 # Execute arbitrary commands when file change
 
 https://eradman.com/entrproject/
