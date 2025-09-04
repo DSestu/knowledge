@@ -1,5 +1,24 @@
 # Pydoll is king, use it instead of selenium
 
+## Using Pydoll to control actual Chrome
+
+Start Chrome with remote debugging port. Make sure to close Chrome first.
+
+```bash
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="%USERPROFILE%\AppData\Local\Google\Chrome\User Data" --profile-directory="Default"
+```
+
+Get your browser ID from: http://localhost:9222/json.
+
+Then
+```python
+from pydoll.browser.chromium import Chrome
+
+chrome = Chrome()
+tab = await chrome.connect('ws://YOUR_HOST:9222/devtools/browser/<id>')
+```
+
+
 ## Nice starting snippet
 
 ```python
