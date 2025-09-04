@@ -8,6 +8,13 @@ Start Chrome with remote debugging port. Make sure to close Chrome first.
 "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="%USERPROFILE%\AppData\Local\Google\Chrome\User Data" --profile-directory="Default"
 ```
 
+There can be issues that you won't have remote debug actually running, in this case make a custom chrome_user_data dir, an log with your email and turn on settings sync so it is an actual copy of your main browser.
+
+```bash
+"C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\Users\david\chrome_user_data_scraping"
+```
+
+
 Get your browser ID from: http://localhost:9222/json.
 
 Then
