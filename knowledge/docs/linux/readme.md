@@ -1,5 +1,13 @@
 # Tools
 
+# Enable 2 finger support for Chrome (forward backward)
+
+Change shortcuts accordingly
+
+```
+(...chrome...) --enable-features=TouchpadOverscrollHistoryNavigation
+```
+
 # My EZA setup
 
 Zsh config
