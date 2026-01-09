@@ -12,13 +12,12 @@ These bits of knowledge are mainly focused on data subjects via Python/PostgresS
 
 **[github.com/DSestu/python-project-template](https://github.com/DSestu/python-project-template)**
 
-A comprehensive Python project template designed to streamline development workflows. This template eliminates the friction of environment setup and configuration, allowing developers to focus purely on coding. Features include:
+This repository provides a CookieCutter template designed for rapid creation of Python tooling projects. The template aims to make your tools easily distributable and callable everywhere using [`uvx`](https://github.com/astral-sh/uv).
 
-- **Zero-config environment synchronization** across different machines
-- **Docker container support** for consistent development environments
-- **Automated dependency management** and virtual environment setup
-- **Pre-configured testing, linting, and CI/CD pipelines**
-- **Minimal manual interaction** - just clone and start coding
+```bash
+uvx cookiecutter gh:DSestu/python-project-template
+```
+
 
 ### ⏰ Prefect Windows Task Scheduler
 
