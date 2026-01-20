@@ -60,20 +60,7 @@ parts:
     numbered: False
     chapters:
     - file: docs/games/mh_wilds/mh_wilds.md
-  - caption: Web Frontend
+  - caption: Android
     numbered: False
     chapters:
-    - file: docs/web_frontend/getting_started.md
-    - file: docs/web_frontend/intro.md
-    - file: docs/web_frontend/stack.md
-    - file: docs/web_frontend/setup.md
-    - file: docs/web_frontend/workflow.md
-    - file: docs/web_frontend/styles_and_ui.md
-    - file: docs/web_frontend/coding_practices.md
-    - file: docs/web_frontend/architecture.md
-    - file: docs/web_frontend/forms_and_data.md
-    - file: docs/web_frontend/accessibility.md
-    - file: docs/web_frontend/performance.md
-    - file: docs/web_frontend/testing_and_quality.md
-    - file: docs/web_frontend/deployment.md
-    - file: docs/web_frontend/references.md
+    - file: docs/android/rooting.md
