@@ -144,7 +144,7 @@ for _ in range(1000):
 
 ```
 
-2. If you aren't using a custom class, and so can't override the `.__hash__()` function.
+1. If you aren't using a custom class, and so can't override the `.__hash__()` function.
 
 This is for example the case of a function that uses operations on a numpy array.
 
@@ -266,13 +266,21 @@ mamba env config vars set PYTHONPATH=/full/path/to/module # Make sure to use the
 mamba env config vars unset PYTHONPATH # Removes a variable
 ```
 
-## Install poetry from an existing path
+# GIT
 
-```python
-poetry init    
+## Discard changes or stash
+
+```
+git reset --hard HEAD
 ```
 
-# GIT
+or
+
+```
+git stash --include-untracked
+...later...
+git pop
+```
 
 ## Permanently ignore changes on a file
 
