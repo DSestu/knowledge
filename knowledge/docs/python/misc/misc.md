@@ -268,6 +268,12 @@ mamba env config vars unset PYTHONPATH # Removes a variable
 
 # GIT
 
+## AIO discard, checkout master, prune etc
+
+```
+git reset --hard HEAD && git checkout master && git pull && git gc --prune=now && git repack -Ad && git prune
+```
+
 ## Discard changes or stash
 
 ```
