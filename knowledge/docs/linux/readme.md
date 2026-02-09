@@ -1,5 +1,101 @@
 # Tools
 
+# Fish terminal
+
+## Setup
+
+```
+sudo apt update
+sudo apt install fish
+fish
+# Install fisher extension management for fish
+curl -sL https://git.io/fisher | source && fisher install jorgebucaran/fisher
+# Install P10K theme alternative for fish (very similar), need meslo fronts
+fisher install IlanCosman/tide@v6
+tide configure
+# Install better ctrl+R with full history display and scroll
+fisher install PatrickF1/fzf.fish
+# Install Z folder jumping navigation
+fisher install jethrokuan/z
+# Abbreviations tips
+fisher install gazorby/fish-abbreviation-tips
+```
+
+Fish config can be accessed here: `fish_config`
+
+---
+
+### Ctrl-backspace
+
+The ctrl-backspace is not implemented by default. To add it:
+
+* `fish_key_reader`: then type ctrl-backspace in order to see the key code.
+
+* If it says `ctrl-h`, this means that the terminal don't send the right key. But you can still add the binding: add `bind \cH backward-kill-word` in the fish config file (`~/.config/fish/config.fish`).
+
+---
+
+### !! and !$
+
+Add `!!` and `!$` bindings for fish: Last command, and last argument of last command.
+
+Edit: `~/.config/fish/config.fish`, and add:
+
+```
+function bind_bang
+    switch [commandline -t](-1)
+        case "!"
+            commandline -t -- $history[1]
+            commandline -f repaint
+        case "*"
+            commandline -i !
+    end
+end
+
+function bind_dollar
+    switch [commandline -t](-1)
+        case "!"
+            commandline -f backward-delete-char history-token-search-backward
+        case "*"
+            commandline -i '$'
+    end
+end
+
+function fish_user_key_bindings
+    bind ! bind_bang
+    bind '$' bind_dollar
+end
+```
+
+## Alternatives to p10k theme of zsh
+
+This is located here: `~/.config/fish/config.fish`
+
+However, fish is not POSIX compliant, so you can't use it as a drop-in replacement for zshrc. You need to write your own config file.
+However, aliases are supported.
+
+Use `eza` aliases from the setup in this page.
+
+## Appearance
+
+Borderless terminal.
+
+* Set MesloNG fonts
+
+* Set Konsole to use the MesloNG font.
+
+* `Ctrl-Shift-M`: Settings > Toolbars shown > uncheck everything
+
+The following point is temporary.
+
+* `Alt-F3` : More actions > No tilebar and frame (same way to show it back)
+
+Do to it permanently:
+
+* `Alt-F3` : More actions > Configure special application settings > Detect window properties > Click on Konsole window > (a new modal appear) > Select No tilebar and frame
+
+* Edit the new entry: set it to yes, and "Apply initially" option in the corresponding dropdown.
+
 # Enable 2 finger support for Chrome (forward backward)
 
 Change shortcuts accordingly
