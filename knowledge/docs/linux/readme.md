@@ -25,6 +25,16 @@ Fish config can be accessed here: `fish_config`
 
 ---
 
+### Add fish autolaunch from zsh
+
+```
+if [[ $(ps -o command= -p "$PPID" | awk '{print $1}') != 'fish' ]] && [[ ${SHLVL} -eq 1 ]]; then
+    exec fish -l
+fi
+```
+
+---
+
 ### Ctrl-backspace
 
 The ctrl-backspace is not implemented by default. To add it:
@@ -134,6 +144,58 @@ function y
  end
  rm -f -- "$tmp"
 end
+```
+
+# Micro editor
+
+<https://micro-editor.github.io/>
+
+Go to sudo `/usr/bin`
+
+Then
+
+```
+curl https://getmic.ro | bash
+```
+
+Edit file: `micro file`
+
+# Automatic terminal multiplexing on ssh with Byobu and fish
+
+Install byobu:
+
+```
+sudo apt update
+sudo apt install byobu
+```
+
+Next enable fish as the default shell on byobu:
+
+Edit file:
+
+```
+micro ~/.byobu/.tmux.conf
+```
+
+Add the following:
+
+```
+set -g default-shell /usr/bin/fish
+set -g default-command /usr/bin/fish
+```
+
+Next automatically start byobu on ssh:
+
+Edit file:
+
+```
+micro ~/.zprofile
+```
+
+Add the following:
+
+```
+_byobu_sourced=1 . /usr/bin/byobu-launch 2>/dev/null || true
 ```
 
 # Niri desktop manager install
