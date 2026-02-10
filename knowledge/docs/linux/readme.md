@@ -203,44 +203,13 @@ Reminder, enable fkeys with:
 * Alt-F12: Enable mouse support
 * Ctrl-F12: Enable keybinds
 
-# Niri desktop manager install
-
-Install dependencies:
-
-```fish
-sudo apt install rustup gcc clang \
-  libudev-dev libgbm-dev libxkbcommon-dev libegl1-mesa-dev \
-  libwayland-dev libinput-dev libdbus-1-dev libsystemd-dev \
-  libseat-dev libpipewire-0.3-dev libpango1.0-dev libdisplay-info-dev
-```
-
-Set up Rust
-
-```fish
-rustup default stable
-cargo install cargo-deb
-```
-
-Build and install Niri:
-
-```fish
-git clone https://github.com/YaLTeR/niri.git
-cd niri
-cargo deb
-sudo dpkg -i target/debian/niri_*.deb
-sudo apt install -f  # Resolve any missing dependencies
-```
-
-Install xwayland-satellite (required for XWayland support):
-
-```fish
-git clone https://github.com/Supreeeme/xwayland-satellite.git
-cd xwayland-satellite
-cargo deb
-sudo dpkg -i target/debian/xwayland-satellite_*.deb
-```
-
 # My EZA setup
+
+Install eza:
+
+```
+cargo install eza
+```
 
 Zsh config
 `~/.zshrc`
