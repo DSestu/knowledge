@@ -11,6 +11,12 @@ alias pullall='for d in $HOME/github/*/; do (cd "$d" && if [ -d .git ]; then ech
 
 ```
 
+# Running precommit hooks on files changed in the PR
+
+```
+alias pc="git diff --name-only --diff-filter ACMR origin/master...HEAD | xargs pre-commit run --files"
+```
+
 # Reading environment file and modifying env for single command
 
 ```bash
