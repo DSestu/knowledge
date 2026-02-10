@@ -198,6 +198,11 @@ Add the following:
 _byobu_sourced=1 . /usr/bin/byobu-launch 2>/dev/null || true
 ```
 
+Reminder, enable fkeys with:
+
+* Alt-F12: Enable mouse support
+* Ctrl-F12: Enable keybinds
+
 # Niri desktop manager install
 
 Install dependencies:
