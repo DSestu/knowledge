@@ -101,14 +101,14 @@ Do to it permanently:
 Use latest stable rust toolchain:
 
 ```fish
-curl --proto '=https' --tlsv1.2 -sSf <https://sh.rustup.rs> | sh
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 rustup update
 ```
 
 Clone the repository and build yazi:
 
 ```fish
-git clone <https://github.com/sxyazi/yazi.git>
+git clone https://github.com/sxyazi/yazi.git
 cd yazi
 cargo build --release --locked
 ```
