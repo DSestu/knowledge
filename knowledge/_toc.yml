@@ -35,6 +35,7 @@ parts:
     numbered: False
     chapters:
     - file: docs/linux/readme.md
+    - file: docs/linux/git_n_ci.md
   - caption: Windows
     numbered: False
     chapters:
