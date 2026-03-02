@@ -1,5 +1,104 @@
 # Misc snippets
 
+# Rate limiter
+
+## Asynchronous
+
+```python
+import asyncio
+from collections import deque
+from typing import Deque
+
+class RateLimiter:
+    """Allow at most `max_calls` per `period` seconds (token-bucket style)."""
+
+    def __init__(self, max_calls: int, period: float) -> None:
+        self._max_calls = max_calls
+        self._period = period
+        self._timestamps: Deque[float] = deque()
+        self._lock = asyncio.Lock()
+
+    async def acquire(self) -> None:
+        async with self._lock:
+            loop = asyncio.get_running_loop()
+            now = loop.time()
+
+            # Drop calls that are outside the current window
+            while self._timestamps and self._timestamps[0] <= now - self._period:
+                self._timestamps.popleft()
+
+            if len(self._timestamps) >= self._max_calls:
+                sleep_for = self._period - (now - self._timestamps[0])
+                await asyncio.sleep(sleep_for)
+                # after sleeping, clean again and continue
+                now = loop.time()
+                while self._timestamps and self._timestamps[0] <= now - self._period:
+                    self._timestamps.popleft()
+
+            self._timestamps.append(loop.time())
+```
+
+Use with:
+
+```python
+rate_limiter = RateLimiter(max_calls=90, period=10.0)  # e.g. 90 calls / 10s
+
+async def main():
+    for i in range(10):
+        await rate_limiter.acquire()
+        # Perform the HTTP request or some asynchronous operation here
+        print(f"Call {i+1} allowed")
+```
+
+### Synchronous
+
+```python
+import time
+from collections import deque
+from threading import Lock
+from typing import Deque
+
+class SyncRateLimiter:
+    """Allow at most `max_calls` per `period` seconds (token-bucket style)."""
+
+    def __init__(self, max_calls: int, period: float) -> None:
+        self._max_calls = max_calls
+        self._period = period
+        self._timestamps: Deque[float] = deque()
+        self._lock = Lock()
+
+    def acquire(self) -> None:
+        with self._lock:
+            now = time.monotonic()
+
+            # Drop calls that are outside the current window
+            while self._timestamps and self._timestamps[0] <= now - self._period:
+                self._timestamps.popleft()
+
+            if len(self._timestamps) >= self._max_calls:
+                sleep_for = self._period - (now - self._timestamps[0])
+                if sleep_for > 0:
+                    time.sleep(sleep_for)
+                # after sleeping, clean again
+                now = time.monotonic()
+                while self._timestamps and self._timestamps[0] <= now - self._period:
+                    self._timestamps.popleft()
+
+            self._timestamps.append(time.monotonic())
+```
+
+Call with:
+
+```python
+rate_limiter = SyncRateLimiter(max_calls=90, period=10.0)  # e.g. 90 calls / 10s
+
+def main():
+    for i in range(10):
+        rate_limiter.acquire()
+        # Perform the HTTP request or some asynchronous operation here
+        print(f"Call {i+1} allowed")
+```
+
 # ZSHrc snippet to pull every repo in a folder in parallel
 
 Put this in the `.zshrc`.
