@@ -51,6 +51,12 @@ ORDER BY
     duration DESC;
 ```
 
+## Cancel a query by PID
+
+```sql
+SELECT pg_cancel_backend(<pid>);
+```
+
 ## List manually created tables
 
 ```sql
