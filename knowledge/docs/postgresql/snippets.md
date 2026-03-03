@@ -5,26 +5,6 @@
 ```sql
 SELECT
     a.pid,
-    a.usename AS user,
-    a.application_name,
-    a.client_addr,
-    a.client_port,
-    a.state,
-    a.query,
-    a.query_start AS query_start_time,
-    age(now(), a.query_start) AS duration,
-    a.wait_event_type,
-    a.wait_event,
-    (
-        SELECT string_agg(
-            l2.locktype || ':' || 
-            COALESCE((l2.relation::regclass)::text, '') || 
-            COALESCE(':tuple=' || l2.tuple::text, ''),
-            ', '
-        )
-        FROM pg_locks l2
-        WHERE l2.pid = a.pid AND l2.granted = false
-    ) AS locking_on,
     (
         SELECT string_agg(
             blocker.pid::text, ', '
@@ -41,7 +21,27 @@ SELECT
             AND blocker.objid IS NOT DISTINCT FROM blocked.objid
             AND blocker.objsubid IS NOT DISTINCT FROM blocked.objsubid
         WHERE blocked.pid = a.pid AND NOT blocked.granted AND blocker.granted
-    ) AS blocked_by
+    ) AS blocked_by,
+    a.wait_event_type,
+    (
+        SELECT string_agg(
+            l2.locktype || ':' || 
+            COALESCE((l2.relation::regclass)::text, '') || 
+            COALESCE(':tuple=' || l2.tuple::text, ''),
+            ', '
+        )
+        FROM pg_locks l2
+        WHERE l2.pid = a.pid AND l2.granted = false
+    ) AS locking_on,
+    a.state,
+    a.query,
+    a.query_start AS query_start_time,
+    age(now(), a.query_start) AS duration,
+    a.wait_event,
+    a.usename AS user,
+    a.client_addr,
+    a.client_port,
+    a.application_name
 FROM
     pg_stat_activity a
 WHERE
