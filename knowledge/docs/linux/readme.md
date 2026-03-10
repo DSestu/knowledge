@@ -4,7 +4,7 @@
 
 Similar to windows backup and restore.
 
-> Recommended before `apt upgrade` or apt `dist-upgrade`
+> Recommended before `apt upgrade` or `apt dist-upgrade`
 
 Installation:
 
