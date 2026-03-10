@@ -1,5 +1,37 @@
 # Tools
 
+# Timeshift: backup and restore system for linux
+
+Similar to windows backup and restore.
+
+> Recommended before `apt upgrade` or apt `dist-upgrade`
+
+Installation:
+
+```bash
+sudo apt update
+sudo apt install timeshift
+```
+
+Configure timeshift in GUI with:
+
+```bash
+sudo timeshift-gtk
+```
+
+Create a snapshot:
+
+```bash
+sudo timeshift --create --comments "Backup before upgrade <date>"
+```
+
+List and restore a snapshot:
+
+```bash
+timeshift --list
+timeshift --restore --snapshot-id <snapshot-id>
+```
+
 # Fish terminal
 
 ## Setup
