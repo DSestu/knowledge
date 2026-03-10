@@ -32,6 +32,8 @@ timeshift --list
 timeshift --restore --snapshot-id <snapshot-id>
 ```
 
+> If unbootable: boot from a live USB, install/run Timeshift there, point it at your root partition, and restore the desired snapshot.
+
 # Fish terminal
 
 ## Setup
