@@ -1,5 +1,11 @@
 # Git & CI
 
+# Undo last commit without losing changes
+
+```bash
+git reset HEAD~1 --soft
+```
+
 # Running precommit hooks on files changed in the PR
 
 ```
