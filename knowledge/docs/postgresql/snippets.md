@@ -1,5 +1,17 @@
 # Snippets
 
+## Cancelling every running queries
+
+```sql
+SELECT 
+    pg_cancel_backend(pid)
+FROM 
+    pg_stat_activity
+WHERE 
+    state <> 'idle' 
+    AND query NOT ILIKE '%pg_stat_activity%'
+```
+
 ## Show running queries & locks blocking them with the nature and source of the lock
 
 ```sql
