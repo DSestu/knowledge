@@ -52,6 +52,7 @@ parts:
     - file: docs/pentest/misc.md
     - file: docs/pentest/nmap.md
     - file: docs/pentest/android.md
+    - file: docs/pentest/nethunter.md
   - caption: Stable diffusion
     numbered: False
     chapters:
