@@ -43,6 +43,10 @@ parts:
     - file: docs/windows/ffmpeg.md
     - file: docs/windows/context_managers.md
     - file: docs/windows/misc.md
+  - caption: Android
+    numbered: False
+    chapters:
+    - file: docs/android/rooting.md
   - caption: Pentest
     numbered: False
     chapters:
