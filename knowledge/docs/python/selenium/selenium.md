@@ -14,10 +14,10 @@ There can be issues that you won't have remote debug actually running, in this c
 "C:\Program Files\Google\Chrome\Application\chrome.exe" --remote-debugging-port=9222 --user-data-dir="C:\Users\david\chrome_user_data_scraping"
 ```
 
-
-Get your browser ID from: http://localhost:9222/json.
+Get your browser ID from: <http://localhost:9222/json>.
 
 Then
+
 ```python
 from pydoll.browser.chromium import Chrome
 
@@ -25,18 +25,18 @@ chrome = Chrome()
 tab = await chrome.connect('ws://YOUR_HOST:9222/devtools/browser/<id>')
 ```
 
-
 ## Nice starting snippet
 
 ```python
 import asyncio
 import os
 
-from pydoll.browser.chrome import Chrome
-from pydoll.browser.options import Options
-from pydoll.browser.page import Page
+from pydoll.browser import Chrome
+from pydoll.browser.options import ChromiumOptions as Options
+from pydoll.browser.tab import Tab
 from pydoll.constants import By
-from pydoll.element import WebElement
+from pydoll.elements.web_element import WebElement
+
 
 async def highlight(self, element: WebElement, time: int = 5) -> None:
     """
@@ -67,7 +67,8 @@ async def highlight(self, element: WebElement, time: int = 5) -> None:
     )
 
 
-Page.highlight = highlight
+Tab.highlight = highlight
+
 
 def get_options(
     headless: bool = False,
@@ -95,11 +96,17 @@ def get_options(
     return options
 
 
+options = get_options()
 browser = Chrome(options=options)
-await browser.start()
-page = await browser.get_page()
-# await browser.__aexit__(exc_tb="", exc_type="", exc_val="")
+# Be careful, if you close this tab, the browser will be closed
+# You should keep the tab open and work with new open tabs
+tab = await browser.start()
+# New tab with this:
+tab = await browser.new_tab(url="https://www.google.com")
 
+await asyncio.sleep(5)
+# Close the browser
+await browser.__aexit__(exc_tb="", exc_type="", exc_val="")
 ```
 
 ## Scraping multiple pages at once
@@ -264,7 +271,7 @@ then:
 chromedriver_autoinstaller.install()
 ```
 
-2. Using pypi
+1. Using pypi
 
 * Get your chrome version
 
