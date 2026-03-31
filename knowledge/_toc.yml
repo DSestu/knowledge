@@ -34,7 +34,8 @@ parts:
   - caption: Linux
     numbered: False
     chapters:
-    - file: docs/linux/readme.md
+    - file: docs/linux/tools.md
+    - file: docs/linux/kde.md
     - file: docs/linux/git_n_ci.md
   - caption: Windows
     numbered: False
