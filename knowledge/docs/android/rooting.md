@@ -169,3 +169,21 @@ If you want to update, use the OxygenUpdater app, but you will need to extract, 
 * Termux: terminal emulator with a lot of packages available.
 
 * F-Droid: alternative app store with only free and open source apps.
+
+* <https://github.com/MuntashirAkon/AppManager>: Advanced open-source app manager for Android. Features batch operations, detailed app control, backup/restore, tracker analysis, permission management, and more—all without ads or trackers.
+
+# LSPosed
+
+LSPosed is a framework that allows you to easily apply powerful system-wide customizations and modules (like Xposed, but more compatible with new Android versions), letting you tweak the behavior of apps and the Android system without modifying APKs or the OS itself.
+
+The official lsposed repository is no longer maintained, but there are many forks.
+
+You can install LSPosed from the following repositories: <https://github.com/mywalkb/LSPosed_mod>
+
+Download the zip and install it as a magisk module.
+
+The most useful modules are:
+
+* [CorePatch](https://github.com/LSPosed/CorePatch): Unlocks hidden system features and enables advanced app modifications, offering granular control over system behaviors and restrictions. Enables to install apps with target API level too low, downgrade apps etc. (useful to install CSploit from kali nethunter F-Droid)
+
+* [DisableTargetAPIBlock](https://github.com/buttercookie42/DisableTargetAPIBlock): Magisk/Xposed module that bypasses the "blocked by Play Protect" and "target API level too low" restrictions for installing and updating apps on recent versions of Android. Lets you install, update, or open any APK regardless of its target API level, even if Google or the device normally blocks it. **This can be used to install CSploit from kali nethunter F-Droid.**
