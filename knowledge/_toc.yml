@@ -16,7 +16,6 @@ parts:
     - file: docs/python/selenium/selenium.md
     - file: docs/python/misc/misc.md
     - file: docs/python/links/links.md
-    - file: docs/python/links/jupyter_book.md
   - caption: Data Science
     numbered: False
     chapters:
@@ -63,6 +62,10 @@ parts:
     chapters:
     - file: docs/stable_diffusion/intro.md
     - file: docs/stable_diffusion/upscaling.md
+  - caption: Airflow
+    numbered: False
+    chapters:
+    - file: docs/airflow/aws.md
   - caption: Games
     numbered: False
     chapters:
