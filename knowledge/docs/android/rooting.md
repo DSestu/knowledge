@@ -187,3 +187,7 @@ The most useful modules are:
 * [CorePatch](https://github.com/LSPosed/CorePatch): Unlocks hidden system features and enables advanced app modifications, offering granular control over system behaviors and restrictions. Enables to install apps with target API level too low, downgrade apps etc. (useful to install CSploit from kali nethunter F-Droid)
 
 * [DisableTargetAPIBlock](https://github.com/buttercookie42/DisableTargetAPIBlock): Magisk/Xposed module that bypasses the "blocked by Play Protect" and "target API level too low" restrictions for installing and updating apps on recent versions of Android. Lets you install, update, or open any APK regardless of its target API level, even if Google or the device normally blocks it. **This can be used to install CSploit from kali nethunter F-Droid.**
+
+# Removing the annoying left Homescreen google discover page
+
+Disable the Google application.
