@@ -188,6 +188,8 @@ The most useful modules are:
 
 * [DisableTargetAPIBlock](https://github.com/buttercookie42/DisableTargetAPIBlock): Magisk/Xposed module that bypasses the "blocked by Play Protect" and "target API level too low" restrictions for installing and updating apps on recent versions of Android. Lets you install, update, or open any APK regardless of its target API level, even if Google or the device normally blocks it. **This can be used to install CSploit from kali nethunter F-Droid.**
 
+* <https://github.com/auag0/DisableAudioFocus>: Disables audio focus, allowing different apps and media to play audio at the same time.
+
 # Removing the annoying left Homescreen google discover page
 
 Disable the Google application.
