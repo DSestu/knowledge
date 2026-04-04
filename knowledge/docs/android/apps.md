@@ -22,10 +22,16 @@ To play Master of Olympus, you need to:
 
 3. Use the resolution of the default game (800x600).
 
-I didn't test for the resolution patch.
+I didn't test for the resolution patch. But I think you should adapt then the screen resolution.
 
 **Fix the sound:**
 
 1. Container options > Composants win > Directsound.
 
 2. Change `Native (Windows)` to `Builtin (Wine)`.
+
+**Touchscreen:**
+
+1. Container options > Controller > Mode touchscreen, enable it. In it's own settings, activate the double finger right click.
+
+Be careful, the double finger is: Left finger first without move, then second finger.
