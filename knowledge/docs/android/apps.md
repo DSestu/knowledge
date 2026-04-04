@@ -14,10 +14,18 @@ To play Master of Olympus, you need to:
 
 1. Install the game from gamenative.
 
-2. Download <https://github.com/FunkyFr3sh/cnc-ddraw/releases> zip file.
+**Fix the non visible text and menus:**
 
-3. Extract it in the folder of the game.
+1. Download <https://github.com/FunkyFr3sh/cnc-ddraw/releases> zip file.
 
-4. Use the resolution of the default game (800x600).
+2. Extract it in the folder of the game.
+
+3. Use the resolution of the default game (800x600).
 
 I didn't test for the resolution patch.
+
+**Fix the sound:**
+
+1. Container options > Composants win > Directsound.
+
+2. Change `Native (Windows)` to `Builtin (Wine)`.
