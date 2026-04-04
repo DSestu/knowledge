@@ -47,6 +47,7 @@ parts:
     numbered: False
     chapters:
     - file: docs/android/rooting.md
+    - file: docs/android/apps.md
   - caption: Pentest
     numbered: False
     chapters:

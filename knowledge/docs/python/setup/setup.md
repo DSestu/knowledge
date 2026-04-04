@@ -177,7 +177,7 @@ COPY . /environment/
 
 `docker-compose.yml`
 
-```yaml	
+```yaml 
 version: '3.8'
 
 services:
@@ -211,3 +211,9 @@ docker run -d -p 8000:8000 -p 9443:9443 --name portainer --restart=always -v /va
 ```
 
 Then you can access it at [https://localhost:9443](https://localhost:9443).
+
+## Removing all docker images and volumes
+
+```bash
+docker system prune -a --volumes
+```
