@@ -15,7 +15,8 @@ sphinx:
   config:
     html_js_files:
     - https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js
-    suppress_warnings: ["mystnb.unknown_mime_type"]
+    suppress_warnings: ["mystnb.unknown_mime_type", "myst.xref_missing"]
+    myst_heading_anchors: 3
 
 
 # Disable re-execution of notebooks on each build.

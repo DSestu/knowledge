@@ -36,6 +36,19 @@ parts:
     - file: docs/linux/tools.md
     - file: docs/linux/kde.md
     - file: docs/linux/git_n_ci.md
+  - caption: NixOS
+    numbered: False
+    chapters:
+    - file: docs/nixos/getting-started.md
+    - file: docs/nixos/configuration.md
+    - file: docs/nixos/kde.md
+    - file: docs/nixos/dev-tools.md
+    - file: docs/nixos/packages.md
+    - file: docs/nixos/personal-setup.md
+    - file: docs/nixos/snippets.md
+    - file: docs/nixos/tricks.md
+    - file: docs/nixos/impermanence.md
+    - file: docs/nixos/windows-to-nixos.md
   - caption: Windows
     numbered: False
     chapters:
