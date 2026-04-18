@@ -2,6 +2,8 @@
 
 A developer workstation on NixOS: editors, shells, containers, VMs, per-project environments, IDEs, and the "how do I run this random binary from the internet" problem.
 
+This page assumes you already have a real NixOS host — NixOS-WSL, a VirtualBox sandbox, a libvirt VM on Kali, or real hardware. If you are still at the home-manager-on-Debian / home-manager-on-Kali stage (Level 2a), most of what's below has a home-manager equivalent; see [home-manager-modes.md](home-manager-modes.md). The `virtualisation.*`, `programs.nix-ld`, `programs.docker.*` options shown here are **NixOS-only** and require [configuration.md](configuration.md) to be your starting point.
+
 ## In this page
 
 - [System-wide CLI tools](#system-wide-cli-tools)
@@ -116,7 +118,7 @@ virtualisation.podman = {
 };
 ```
 
-> Pick one. If Docker Desktop / Colima was your previous setup on macOS (see [python/setup](../python/setup/setup.md)), NixOS's native Docker daemon replaces Colima entirely — just install Docker and go.
+> Pick one daemon per host. If you are coming from Docker Desktop on Windows (WSL2 backend) or Docker Desktop on macOS, the native Linux daemon enabled above replaces that shim entirely — no Desktop client, no VM-in-a-VM. From inside NixOS-WSL the daemon runs inside the WSL2 distro directly, so interop with Windows containers is lost; that is nearly always fine for Linux-container development.
 
 ## Virtualization (virt-manager / libvirt / QEMU)
 
@@ -234,21 +236,25 @@ Three fixes, from cleanest to easiest:
    ];
    ```
 
-2. **Use `programs.nix-ld`** to fake an FHS dynamic linker for foreign binaries:
+2. **Use `programs.nix-ld`** to fake an FHS dynamic linker for foreign binaries. The canonical library list lives in [packages.md](packages.md#2-programs-nix-ld--fake-fhs-dynamic-linker); declare it once in a shared module and import from every host. A minimal working set:
    ```nix
    programs.nix-ld = {
      enable = true;
      libraries = with pkgs; [
        stdenv.cc.cc.lib
-       zlib
+       zlib zstd
        openssl
        curl
        glib
        libxkbcommon
+       icu
+       fuse3
+       xorg.libX11 xorg.libXcursor xorg.libXi xorg.libXrandr xorg.libXxf86vm
+       libGL
      ];
    };
    ```
-   Now prebuilt binaries (VSCode extensions, pip wheels, pnpm/npm native modules, rustup, etc.) mostly Just Work.
+   Now prebuilt binaries (VSCode extensions, pip wheels, pnpm/npm native modules, rustup-installed toolchains, etc.) mostly Just Work. When one still fails, the error names the missing `lib<foo>.so.N` — add the corresponding nixpkgs package to `libraries` and rebuild.
 
 3. **Run inside an FHS shell** for the stubborn cases:
    ```nix
@@ -268,5 +274,7 @@ Don't put secrets in `configuration.nix` — it lands in the world-readable `/ni
 
 ## Next
 
-- [packages.md](packages.md) — adding packages, unfree, Steam, AppImages, Flatpak.
+- [packages.md](packages.md) — adding packages, unfree, Steam, AppImages, Flatpak, `nix-ld` canonical library list.
+- [home-manager-modes.md](home-manager-modes.md) — putting `programs.fish`/`programs.git`/`programs.direnv` in `home.nix` instead.
+- [multi-host-flake.md](multi-host-flake.md) — sharing one `dev.nix` module across every host.
 - [snippets.md](snippets.md) — docker rootless, GPU, fonts, etc.

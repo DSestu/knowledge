@@ -2,6 +2,8 @@
 
 The whole system is one Nix expression, usually rooted at `/etc/nixos/configuration.nix`. Every time you run `nixos-rebuild switch`, that expression is evaluated, a new system closure is built, and the bootloader gets a new entry. Rollback is free.
 
+This page is the anchor for everything from Level 2b onward in the [four-level framing](getting-started.md#the-four-safe-levels-of-commitment): once you have a real `configuration.nix` in front of you — whether inside NixOS-WSL, a VirtualBox VM, a libvirt VM on Kali, or on actual hardware — this is the mental model that applies to all of them. If the syntax below looks unfamiliar (the `{ pkgs, ... }:` header, `with pkgs;`, attribute sets), read [nix-language.md](nix-language.md) first; ten minutes there saves hours of guessing.
+
 This page covers the mental model of `configuration.nix` itself: what it looks like, how to rebuild, how to find the option you need, and how to split the file into modules when it grows.
 
 ## In this page
@@ -89,9 +91,11 @@ sudo nixos-rebuild switch --upgrade   # also update channels
 
 ```bash
 sudo nixos-rebuild switch --flake /etc/nixos#<hostname>
-sudo nix flake update /etc/nixos       # bump all inputs
-sudo nix flake update /etc/nixos --update-input nixpkgs  # only nixpkgs
+sudo nix flake update --flake /etc/nixos           # bump all inputs
+sudo nix flake update --flake /etc/nixos nixpkgs   # only nixpkgs (positional, Nix 2.19+)
 ```
+
+> The positional form replaces the old `--update-input nixpkgs` flag, which was deprecated in Nix 2.19 and removed later. If you are on an older Nix, `--update-input nixpkgs` still works; if you see "unrecognised flag" when following an older tutorial, switch to the positional form above.
 
 > `sudo` is needed because activation writes to `/run/current-system` and the bootloader. The build itself runs as the invoking user.
 
@@ -298,6 +302,8 @@ sudo nix-channel --add https://github.com/NixOS/nixpkgs/archive/<sha>.tar.gz nix
 
 `flake.lock` is committed; it pins the exact revision of every input. `nix flake update` bumps it.
 
+> The snippet above is the single-host shape. Once you maintain more than one machine — desktop VM, Kali VM, portable SSD, real hardware — the `nixosConfigurations.myhost = ...` block grows repetitive fast. See [multi-host-flake.md](multi-host-flake.md) for the `mkHost` helper pattern and the `hosts/` + `modules/` layout that factor out the duplication.
+
 ## Modularizing your config
 
 Split `configuration.nix` once it crosses ~200 lines. One module per concern.
@@ -355,7 +361,14 @@ NIXPKGS_ALLOW_UNFREE=1 nix-shell -p spotify --run spotify
 
 If you want home-manager rebuilt alongside the system (instead of separately per user), import its NixOS module (see the flakes example above for the flake path; for classic, the README shows the `<home-manager/nixos>` import). Then `nixos-rebuild switch` also rebuilds your user environment. That is usually what you want on a single-user machine.
 
+This is one of the two ways to run home-manager — the **NixOS module** mode. The other is **standalone**, where home-manager is its own tool with its own `home-manager switch` command, which is what you use on non-NixOS hosts (Kali, Debian, WSL Ubuntu). The differences in activation, `pkgs` sharing, and `stateVersion` behavior matter enough that they have their own page: [home-manager-modes.md](home-manager-modes.md). If you are coming from Level 2a on Kali and now writing your first real NixOS configuration, that page maps the mental model across.
+
 ## Next
 
+- [nix-language.md](nix-language.md) — the Nix language subset you need to read and write the modules above.
+- [home-manager-modes.md](home-manager-modes.md) — standalone vs NixOS module mode, and which to pick where.
+- [multi-host-flake.md](multi-host-flake.md) — one flake, many hosts (desktop VM, Kali VM, portable SSD, real hw).
 - [kde.md](kde.md) — Plasma 6 options layered on top of the skeleton above.
 - [packages.md](packages.md) — adding packages and dealing with prebuilt binaries.
+- [personal-setup.md](personal-setup.md) — a worked end-to-end example assembling everything above.
+- [tricks.md](tricks.md) — operational tips once `configuration.nix` is real.

@@ -2,7 +2,9 @@
 
 Wipe the entire root filesystem on every boot. Everything starts clean, except the paths you *explicitly* mark as persistent. The system becomes honest about its state — if you didn't declare it, it doesn't survive.
 
-This is an advanced deployment pattern. You don't need it to enjoy NixOS, but it is the logical conclusion of "my system is a git repo of text files": anything not in the repo either shouldn't exist, or needs to be *explicitly* persisted.
+This is a **Level-3+ pattern** in the [four-level framing](getting-started.md#the-four-safe-levels-of-commitment). It only makes sense once you have a real NixOS host with a real disk — internal drive, external SSD, or cloud VM installed via nixos-anywhere. You cannot meaningfully run impermanence inside NixOS-WSL (WSL owns the root filesystem) or inside a nixos-rebuild-build-vm throwaway (it already has no persistent state). It also depends on a declarative partition layout, which is what [disko.md](disko.md) exists for — the two pages pair naturally.
+
+You don't need impermanence to enjoy NixOS, but it is the logical conclusion of "my system is a git repo of text files": anything not in the repo either shouldn't exist, or needs to be *explicitly* persisted. Reach for it once your `configuration.nix` + `home.nix` have stabilized and you want to know exactly what state your machine accumulates.
 
 ## In this page
 
@@ -192,6 +194,28 @@ boot.initrd.postDeviceCommands = lib.mkAfter ''
   umount /mnt
 '';
 ```
+
+### Classic initrd vs systemd-initrd
+
+The `boot.initrd.postDeviceCommands` hook shown above is the **classic initrd** path. Modern NixOS increasingly defaults to **systemd-initrd** (enabled with `boot.initrd.systemd.enable = true;`), in which `postDeviceCommands` is ignored — you need a systemd unit that runs inside the initrd instead:
+
+```nix
+boot.initrd.systemd.enable = true;
+
+boot.initrd.systemd.services.rollback = {
+  description = "Rollback BTRFS / ZFS root to blank snapshot";
+  wantedBy = [ "initrd.target" ];
+  after = [ "zfs-import-rpool.service" ];      # ZFS only
+  before = [ "sysroot.mount" ];
+  unitConfig.DefaultDependencies = "no";
+  serviceConfig.Type = "oneshot";
+  script = ''
+    zfs rollback -r rpool/root@blank
+  '';
+};
+```
+
+For Btrfs, drop the `after = [ "zfs-import-rpool.service" ];` line and put the subvolume-swap commands in `script`. Check `boot.initrd.systemd.enable` on your host before picking a style — mixing the two silently does nothing.
 
 ### Pros and cons vs tmpfs
 
@@ -394,5 +418,7 @@ Combined with [`nixos-anywhere`](tricks.md), you can even skip the installer: ru
 ## See also
 
 - [configuration.md](configuration.md) — the module system and `fileSystems` options.
+- [disko.md](disko.md) — declarative partitioning; pairs with impermanence.
+- [secrets.md](secrets.md) — agenix/sops-nix, and how to persist their decryption keys so the system can boot.
 - [tricks.md](tricks.md) — live USB, `nixos-anywhere`, and other reinstall tools that shine with impermanence.
 - [personal-setup.md](personal-setup.md) — for `ssh.hostKeys`, which must point at `/persist` when impermanence is in use.

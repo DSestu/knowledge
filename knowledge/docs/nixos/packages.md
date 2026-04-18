@@ -74,9 +74,11 @@ Inputs pin automatically:
 
 ```bash
 nix flake update                       # bump all inputs, update flake.lock
-nix flake update --update-input nixpkgs
+nix flake update nixpkgs               # positional (Nix 2.19+); replaces --update-input
 nix flake lock --override-input nixpkgs github:NixOS/nixpkgs/<sha>
 ```
+
+> The positional form (`nix flake update <inputName>`) replaced `--update-input <inputName>` in Nix 2.19. If you are on an older installation, the flag form still works; switch to positional once you upgrade.
 
 Commit `flake.lock` alongside `flake.nix`. Together they give you bit-identical rebuilds on any machine.
 
@@ -298,24 +300,58 @@ Drop that into `environment.systemPackages`; `my-fhs` becomes a command that ope
 For something you want as a proper system package:
 
 ```nix
-pkgs.stdenv.mkDerivation {
+pkgs.stdenv.mkDerivation rec {
   pname = "vendor-tool";
   version = "1.2.3";
+
   src = pkgs.fetchurl {
-    url = "https://vendor.example/vendor-tool-1.2.3-linux-x64.tar.gz";
-    sha256 = lib.fakeSha256;   # replace after first build
+    url = "https://vendor.example/${pname}-${version}-linux-x64.tar.gz";
+    hash = pkgs.lib.fakeHash;      # replace after first build
   };
+
   nativeBuildInputs = [ pkgs.autoPatchelfHook ];
-  buildInputs = with pkgs; [ stdenv.cc.cc.lib zlib openssl ];
+
+  # Libraries the vendor binary expects at runtime. autoPatchelfHook rewrites
+  # every ELF's rpath so that they resolve into the Nix store.
+  buildInputs = with pkgs; [
+    stdenv.cc.cc.lib
+    zlib
+    openssl
+  ];
+
+  # The tarball extracts into the current directory. Layout is assumed to be
+  # ./bin/vendor-tool, ./lib/*, ./share/*. Drop those straight into $out.
   installPhase = ''
-    mkdir -p $out/bin
-    cp -r . $out/
-    ln -s $out/bin/vendor-tool $out/bin/vendor-tool
+    runHook preInstall
+    mkdir -p $out
+    cp -r ./. $out/
+    runHook postInstall
   '';
+
+  meta.mainProgram = "vendor-tool";   # enables `nix run .#vendor-tool`
 }
 ```
 
-`autoPatchelfHook` rewrites every ELF's rpath to the nix store, so the binary finds its libs at runtime without FHS.
+`autoPatchelfHook` walks `$out` after install, finds every ELF, and rewrites its rpath to point at libs from `buildInputs` (in the Nix store). The binary then finds its libs at runtime without any FHS layer.
+
+Two common pitfalls fixed in the snippet above vs older tutorials:
+
+- **Don't self-symlink `$out/bin/vendor-tool` to itself.** Older recipes did `ln -s $out/bin/foo $out/bin/foo` which just creates a broken symlink. If `$out/bin/vendor-tool` already exists because the tarball had a `bin/` directory, `cp -r ./. $out/` places it correctly and you're done. If the binary lives at the tarball root, use `install -Dm755 vendor-tool $out/bin/vendor-tool` — never a self-symlink.
+- **Use `hash`, not `sha256`.** The newer `hash` attribute accepts any hash algorithm with its SRI prefix (`sha256-...`, `sha512-...`). On first build, set `hash = pkgs.lib.fakeHash;`, read the expected hash from the build failure, paste it in. Old tutorials use `sha256 = lib.fakeSha256` — still works but deprecated.
+
+For tarballs that ship a simple `bin/foo + lib/libfoo.so` layout, the recipe above is all you need. For vendor installers that expect a specific directory structure (opt/company/tool/bin/foo), mimic it inside `$out` and add wrappers:
+
+```nix
+installPhase = ''
+  runHook preInstall
+  mkdir -p $out/opt/vendor-tool $out/bin
+  cp -r ./. $out/opt/vendor-tool/
+  makeWrapper $out/opt/vendor-tool/bin/vendor-tool $out/bin/vendor-tool
+  runHook postInstall
+'';
+
+nativeBuildInputs = [ pkgs.autoPatchelfHook pkgs.makeWrapper ];
+```
 
 ## Flatpak as escape hatch
 
@@ -366,5 +402,7 @@ nixpkgs.overlays = [
 
 ## Next
 
+- [nix-language.md](nix-language.md) — the `with pkgs;`, `lib.*`, attribute-set syntax used throughout this page.
+- [dev-tools.md](dev-tools.md) — the same `nix-ld` / `buildFHSEnv` story applied to language toolchains.
 - [snippets.md](snippets.md) — copy-paste recipes for common services.
 - [tricks.md](tricks.md) — VM, live USB, `nixos-anywhere`, rollback.

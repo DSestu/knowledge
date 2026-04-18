@@ -12,6 +12,17 @@ Three scopes. Each H2 below tells you which one applies.
 
 If you've split your system config into `./modules/*.nix`, treat them as `configuration.nix`-equivalent — the module system merges everything.
 
+> This page is a **quick reference**. Fuller treatments live elsewhere:
+>
+> - Module system, flakes, `nixos-rebuild` variants → [configuration.md](configuration.md)
+> - Home-manager modes (standalone vs NixOS module) and `targets.genericLinux.enable` → [home-manager-modes.md](home-manager-modes.md)
+> - Multiple hosts in one flake, `mkHost` helper → [multi-host-flake.md](multi-host-flake.md)
+> - Declarative partitioning (disko) → [disko.md](disko.md)
+> - Secrets (agenix / sops-nix) → [secrets.md](secrets.md)
+> - Wipe-on-boot (impermanence) → [impermanence.md](impermanence.md)
+> - User-level recipes (fish, git, ssh client, fleet patterns) → [personal-setup.md](personal-setup.md)
+> - Packaging non-Nix binaries (`nix-ld`, `autoPatchelfHook`, AppImages, FHS) → [packages.md](packages.md)
+
 ## In this page
 
 **[Command snippets (shell)](#command-snippets-shell)**
@@ -167,10 +178,10 @@ nix store diff-closures /nix/var/nix/profiles/system-41-link /nix/var/nix/profil
 sudo nix-channel --update
 
 # flakes — bump every input
-nix flake update /etc/nixos
+sudo nix flake update --flake /etc/nixos
 
-# flakes — bump only nixpkgs
-nix flake update --update-input nixpkgs /etc/nixos
+# flakes — bump only nixpkgs (Nix 2.19+: positional form)
+sudo nix flake update --flake /etc/nixos nixpkgs
 
 # flakes — show pinned inputs, hashes, and the outputs tree
 nix flake metadata /etc/nixos
@@ -559,7 +570,11 @@ system.autoUpgrade = {
   allowReboot = false;          # set true on servers
   dates = "04:00";
   flake = "/etc/nixos";         # or omit for classic channels
+  # Nix 2.19+: positional input names; --commit-lock-file keeps the lock under git.
   flags = [ "--update-input" "nixpkgs" "--commit-lock-file" ];
+  # If your Nix is 2.19+ and you want only the new syntax, use:
+  #   flags = [ "--commit-lock-file" ];
+  # and run `nix flake update nixpkgs` from a timer or hook instead.
 };
 ```
 
@@ -581,6 +596,8 @@ nix.settings = {
 ```
 
 ## Declarative disk mounts
+
+For one-off extra mounts on an already-partitioned host. If you want the *root disk layout* itself declared in your flake (partitioning, LUKS, subvolumes, encrypted swap), use [disko.md](disko.md) instead.
 
 ```nix
 fileSystems."/data" = {
@@ -633,12 +650,7 @@ fonts = {
 
 ## Secrets management (pointer)
 
-Don't put secrets in `configuration.nix` — `/nix/store` is world-readable. Pick one:
-
-- **agenix** — encrypt files with SSH public keys, decrypt at activation. Repo: `github:ryantm/agenix`.
-- **sops-nix** — SOPS + age. Repo: `github:Mic92/sops-nix`.
-
-Minimal sops-nix example:
+Don't put secrets in `configuration.nix` — `/nix/store` is world-readable. The full treatment (threat model, agenix vs sops-nix walkthrough, home-manager scope, bootstrap on a fresh install, impermanence integration) lives in [secrets.md](secrets.md). Minimal sops-nix example for reference:
 
 ```nix
 # flake input

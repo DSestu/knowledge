@@ -116,23 +116,27 @@ console.keyMap = "fr";
 
 ## Essentials on top of Plasma
 
-```nix
-environment.systemPackages = with pkgs.kdePackages; [
-  kate
-  kcalc
-  kcolorchooser
-  kolourpaint
-  ksystemlog
-  partitionmanager
-  filelight          # disk-usage visualizer
-  isoimagewriter     # USB writer with checksum verification
-];
+Two kinds of packages here: those that live under `pkgs.kdePackages` (the curated KDE 6 set) and everything else. The NixOS module system merges both into `environment.systemPackages`, so declare one combined list:
 
+```nix
 environment.systemPackages = with pkgs; [
-  wl-clipboard       # Wayland clipboard CLI
+  # KDE 6 applications
+  kdePackages.kate
+  kdePackages.kcalc
+  kdePackages.kcolorchooser
+  kdePackages.kolourpaint
+  kdePackages.ksystemlog
+  kdePackages.partitionmanager
+  kdePackages.filelight          # disk-usage visualizer
+  kdePackages.isoimagewriter     # USB writer with checksum verification
+
+  # Supporting tools
+  wl-clipboard                   # Wayland clipboard CLI
   kdePackages.qtstyleplugin-kvantum  # theming engine for Qt
 ];
 ```
+
+If you prefer the shorter `with pkgs.kdePackages;` form for a block of KDE-only packages, **use it in a separate `imports = [ ./kde-apps.nix ]` module** rather than a second top-level `environment.systemPackages` assignment in the same file — two assignments in the same file merge fine but read confusingly.
 
 ## Useful programs modules
 
@@ -148,10 +152,7 @@ programs.dconf.enable = true;         # needed by some GTK apps (VSCode theme, e
 Most KWin settings live in `~/.config/kwinrc` and are edited via System Settings, not `configuration.nix`. A couple of exceptions:
 
 ```nix
-# Disable baloo file indexer system-wide if you find it annoying
-services.kdeconnect.enable = true;
-
-# Enable touchpad gestures / libinput tuning
+# Touchpad gestures / libinput tuning
 services.libinput = {
   enable = true;
   touchpad = {
@@ -160,9 +161,13 @@ services.libinput = {
     disableWhileTyping = true;
   };
 };
+
+# Baloo file indexer: it's a per-user service, so disable via the user's
+# ~/.config/baloofilerc (easiest through home-manager home.file or
+# programs.plasma.configFile), not at the system level.
 ```
 
-> For anything per-user (themes, wallpapers, panel layouts, keyboard shortcuts), use **home-manager** with the `plasma-manager` module — see the next section.
+> For anything per-user (themes, wallpapers, panel layouts, keyboard shortcuts, Baloo), use **home-manager** with the `plasma-manager` module — see the next section. KDE Connect already lives under `programs.kdeconnect.enable` in the previous section, don't re-enable it here.
 
 ## Declarative Plasma config (plasma-manager)
 
@@ -457,9 +462,16 @@ Hibernate needs a swap that is ≥ RAM and `boot.resumeDevice` set. See the swap
 
 ## Flatpak integration on Wayland
 
+The minimum-working setup is already covered in [packages.md](packages.md#flatpak-as-escape-hatch) (which enables `services.flatpak` and the KDE xdg portal in the same block). The KDE-specific note is that the portal **must** be the KDE one for file pickers, screen share, and theming to behave:
+
 ```nix
-services.flatpak.enable = true;
+xdg.portal = {
+  enable = true;
+  extraPortals = [ pkgs.kdePackages.xdg-desktop-portal-kde ];
+};
 ```
+
+If you already enabled the generic `xdg.portal.enable = true;` for other reasons (GNOME apps, Electron), make sure `extraPortals` still includes the KDE one — missing that is the single most common cause of "file picker opens in GTK mode inside a KDE session".
 
 After a rebuild, add Flathub manually (one-time):
 
@@ -467,9 +479,9 @@ After a rebuild, add Flathub manually (one-time):
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
 ```
 
-Flatpak apps will now open files, share screens, and themes correctly via the KDE portal.
-
 ## Next
 
+- [home-manager-modes.md](home-manager-modes.md) — plasma-manager lives on the home-manager side; this is where the module-vs-standalone trade-off matters.
+- [multi-host-flake.md](multi-host-flake.md) — sharing one `kde.nix` module across every host that runs Plasma.
 - [dev-tools.md](dev-tools.md) — developer tooling layered on top of KDE.
 - [snippets.md](snippets.md) — GPU, Bluetooth, printing, power management.

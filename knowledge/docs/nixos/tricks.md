@@ -286,28 +286,43 @@ nix-locate bin/ffprobe
 
 ## Lightweight containers — `nixos-container`
 
-Spin up full NixOS systems as systemd-nspawn containers on the same host. Much lighter than VMs, useful for testing services in isolation.
+Spin up full NixOS systems as systemd-nspawn containers on the same host. Much lighter than VMs, useful for testing services in isolation — a real NixOS inside, sharing the host's kernel.
 
 ```nix
-containers.pihole = {
+containers.adguard = {
   autoStart = true;
   privateNetwork = true;
-  hostAddress = "10.42.0.1";
+  hostAddress  = "10.42.0.1";
   localAddress = "10.42.0.2";
+
   config = { config, pkgs, ... }: {
-    services.pihole.enable = true;          # hypothetical
+    services.adguardhome = {
+      enable = true;
+      openFirewall = true;
+      settings = {
+        bind_host = "0.0.0.0";
+        bind_port = 3000;
+      };
+    };
     system.stateVersion = "24.11";
   };
 };
 ```
 
+Real, packaged services work here: `services.adguardhome`, `services.nginx`, `services.postgresql`, `services.grafana`, `services.jellyfin` — anything with a NixOS module. Perfect for building a declarative homelab service on a real host without polluting the host's service list.
+
 Manage them:
 
 ```bash
 sudo nixos-container list
-sudo nixos-container start pihole
-sudo nixos-container root-login pihole
+sudo nixos-container start adguard
+sudo nixos-container root-login adguard
+sudo nixos-container update adguard       # re-evaluate + restart after editing the host's configuration.nix
+sudo nixos-container stop adguard
+sudo nixos-container destroy adguard
 ```
+
+> Each container is a full NixOS evaluation — it gets its own `/etc/nixos/configuration.nix` derivation, its own generations, its own journal. `systemctl status systemd-nspawn@adguard.service` on the host shows it.
 
 ## Copy closures between machines
 
@@ -346,7 +361,7 @@ boot.loader.grub.configurationLimit = 10;
 
 ## Impermanence — wipe `/` on every boot
 
-Advanced but transformative: tmpfs-root so every boot is clean, with explicit `environment.persistence."/persist"` bind-mounts for the things you *do* want to keep. Forces you to be honest about what state actually matters. Full walkthrough in [impermanence.md](impermanence.md).
+Advanced but transformative: tmpfs-root so every boot is clean, with explicit `environment.persistence."/persist"` bind-mounts for the things you *do* want to keep. Forces you to be honest about what state actually matters. Full walkthrough in [impermanence.md](impermanence.md), and the partitioning that goes with it in [disko.md](disko.md).
 
 ## Disaster recovery plan (worth writing down)
 
@@ -361,4 +376,7 @@ With those four, "reinstalling" becomes: boot live USB → `nix-shell -p nixos-a
 
 - [getting-started.md](getting-started.md) — the VM-first learning loop.
 - [configuration.md](configuration.md) — `nixos-rebuild` subcommands.
+- [disko.md](disko.md) — declarative partitioning (required for `nixos-anywhere` and impermanence).
+- [impermanence.md](impermanence.md) — wipe-on-boot root + `/persist` bind-mounts.
+- [secrets.md](secrets.md) — agenix / sops-nix for values that shouldn't live in the store.
 - [packages.md](packages.md) — for Flatpak and Steam alongside these tricks.

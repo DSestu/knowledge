@@ -1,11 +1,14 @@
 # Personal setup
 
-On NixOS, your personal preferences — SSH keys and host aliases, firewall rules, shell config, editor theme — live in the same repo as the rest of your system. This page shows how to translate the dotfiles and setup steps from [Linux → Tools](../linux/tools.md) into declarative NixOS + home-manager form.
+This is the worked example that ties together every piece up to this point: once `configuration.nix` and `home.nix` are real (Level 2b or 3 in the [four-level framing](getting-started.md#the-four-safe-levels-of-commitment)), this is what goes in them. Every recipe here is the declarative translation of the dotfiles + setup steps from [Linux → Tools](../linux/tools.md).
 
-Everything here is split between two scopes:
+Almost everything below is **equally valid in Level 2a** (home-manager standalone on WSL2 Debian or Kali). The `programs.git`, `programs.fish`, `programs.ssh`, `programs.eza`, `programs.yazi`, `programs.micro` modules live entirely inside `home.nix`; copy those sections wholesale into a Kali or WSL2 `home.nix` and they work without any `configuration.nix`. See [home-manager-modes.md](home-manager-modes.md) for the split.
 
-- **System level** (`configuration.nix`) — anything that affects all users, listens on a port, or needs root. SSH server, firewall, globally installed binaries, default shell choice.
-- **User level** (`home.nix`) — your shell plugins, prompt, editor, aliases, `~/.ssh/config`, theme files. Per user, no root needed.
+The three scopes used on this page:
+
+- **System level** (`configuration.nix`) — anything that affects all users, listens on a port, or needs root. SSH server, firewall, globally installed binaries, default shell choice. **NixOS only.**
+- **User level — home-manager** (`home.nix`) — your shell plugins, prompt, editor, aliases, `~/.ssh/config`, theme files. Per user, no root needed. **Portable across NixOS, Kali, WSL2 Debian.**
+- **User level — Plasma** (`programs.plasma` in `home.nix`) — panel layouts, shortcuts, KDE theme. Only applies on hosts that run KDE, so skip on headless / WSL hosts. See [kde.md](kde.md).
 
 ## In this page
 
@@ -641,6 +644,8 @@ versioning = {
 
 One source of truth, every machine imports it. Add a new machine → add its device ID to `modules/syncthing.nix` and `nixos-rebuild switch` on each existing machine. No Web GUI clicks ever.
 
+> This is exactly the layout documented in [multi-host-flake.md](multi-host-flake.md). The Syncthing module is a small, concrete example of why that structure pays off — you want the device list defined once, not copy-pasted into every `configuration.nix`.
+
 ### Android / iOS / Windows / Mac
 
 Syncthing has native clients for all of them; they just need to know your device IDs. No NixOS-specific wiring — install the app, scan the QR code shown by `syncthing --device-id`, accept the peering. The mobile apps ship with sensible defaults (WiFi-only, battery-aware).
@@ -798,5 +803,7 @@ tailscale file get ./incoming/
 ## See also
 
 - [configuration.md](configuration.md) — how `configuration.nix` modules fit together.
+- [home-manager-modes.md](home-manager-modes.md) — lift the `home.nix` half of this page into Level 2a on Kali or WSL2.
+- [multi-host-flake.md](multi-host-flake.md) — share one `modules/` directory across laptop, desktop, NAS.
 - [snippets.md](snippets.md) — more single-purpose copy-paste recipes.
 - [linux/tools.md](../linux/tools.md) — the Debian-flavored originals these translations come from.
