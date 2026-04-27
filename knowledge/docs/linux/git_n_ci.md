@@ -1,5 +1,14 @@
 # Git & CI
 
+## Change the base branch of a PR to the latest commit of master
+
+```bash
+git fetch origin master
+git reset --soft origin/master
+git commit -m "your message"  
+git push --force-with-lease  
+```
+
 # Undo last commit without losing changes
 
 ```bash

@@ -55,6 +55,7 @@ parts:
     - file: docs/nixos/secrets.md
     - file: docs/nixos/windows-to-nixos.md
     - file: docs/nixos/kali-to-nixos.md
+    - file: docs/nixos/perso.md
   - caption: Windows
     numbered: False
     chapters:
