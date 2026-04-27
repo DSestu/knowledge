@@ -1,5 +1,16 @@
 # Git & CI
 
+## Rebase + squash onto latest master (one clean commit)
+
+```bash
+git fetch origin master
+git rebase -i origin/master
+# pick the first, squash the rest
+git push --force-with-lease
+```
+
+⚠️ Do **not** use `git reset --soft origin/master && git commit` unless you have already rebased. On a branch that is behind master, that pattern silently reverts other people's merged work.
+
 # Undo last commit without losing changes
 
 ```bash
