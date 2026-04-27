@@ -1,14 +1,5 @@
 # Git & CI
 
-## Change the base branch of a PR to the latest commit of master
-
-```bash
-git fetch origin master
-git reset --soft origin/master
-git commit -m "your message"  
-git push --force-with-lease  
-```
-
 # Undo last commit without losing changes
 
 ```bash
@@ -54,6 +45,52 @@ git update-index --assume-unchanged FILE
 ```
 
 OR, edit `.git/info/exclude` and add the path of the excluded file.
+
+## Rebase a branch onto latest master and squash into one commit
+
+When you want a PR with **one clean commit** on top of latest master.
+
+### Safe pattern (always works)
+
+```bash
+git fetch origin master
+git rebase -i origin/master
+# in the editor: keep first commit as 'pick', mark all others as 'squash' (or 'fixup')
+git push --force-with-lease
+```
+
+Interactive rebase replays each commit in order, so conflicts are scoped per-commit and the resulting squashed commit only contains *your* changes.
+
+### Shortcut pattern (only if branch is up to date with master)
+
+```bash
+git fetch origin master
+git rebase origin/master            # MUST do this first
+git reset --soft origin/master
+git commit -m "your message"
+git push --force-with-lease
+```
+
+⚠️ **Never run `git reset --soft origin/master && git commit` on a branch that is behind master.** The resulting commit will silently include negative diffs that revert other people's merged work — because the diff is computed as "current working tree vs master", not "your commits". Always rebase first so HEAD's tree only differs from master by *your* changes.
+
+### Sanity check before squashing
+
+```bash
+git log --oneline origin/master..HEAD   # should show only your own commits
+```
+
+If you see commits you didn't author, the branch is behind master — rebase first.
+
+## Recovering a branch you accidentally squashed wrong
+
+If `git reset --soft` + commit produced a bogus single commit and you've already pushed/reverted, your original work is in the reflog:
+
+```bash
+git reflog --date=iso          # find the SHA from before the reset
+git reset --hard <old-sha>     # restore branch tip
+git rebase origin/master       # bring up to date
+git push --force-with-lease
+```
 
 ## Pushing to both Github and Huggingface
 
