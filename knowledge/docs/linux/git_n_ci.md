@@ -11,6 +11,14 @@ git push --force-with-lease
 
 ⚠️ Do **not** use `git reset --soft origin/master && git commit` unless you have already rebased. On a branch that is behind master, that pattern silently reverts other people's merged work.
 
+## Cancel a rebase in progress
+
+```bash
+git rebase --abort
+```
+
+Restores the branch to its state before the rebase started. Safe to run any time mid-rebase.
+
 # Undo last commit without losing changes
 
 ```bash
