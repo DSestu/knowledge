@@ -3,9 +3,16 @@
 ## Rebase + squash onto latest master (one clean commit)
 
 ```bash
-git fetch origin master
-git rebase -i origin/master
-# pick the first, squash the rest
+# Main or master ?
+set DEFAULT_BRANCH (git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+
+git fetch origin $DEFAULT_BRANCH
+git rebase origin/$DEFAULT_BRANCH
+# pick the first, squash the rest (p, or s)
+# git rebase -i origin/$DEFAULT_BRANCH
+# You can use autosquash with sed here
+GIT_SEQUENCE_EDITOR="sed -i '2,\$s/^pick/squash/'" git rebase -i origin/$DEFAULT_BRANCH
+# Force with lease avoid push if someone else pushed in the meantime
 git push --force-with-lease
 ```
 
