@@ -184,6 +184,26 @@ for data in fig.data:
 
 # General figure modification
 
+## Change major and minor ticks
+
+```python
+fig.update_layout(
+      xaxis=dict(
+          tickmode="linear",
+          tick0=0,
+          dtick=10,           # major tick spacing (labels appear here)
+          ticks="outside",
+          ticklen=8,
+          minor=dict(
+              dtick=2,        # minor tick spacing
+              ticks="outside",
+              ticklen=4,
+              showgrid=False, # optional: avoid busy grid
+          ),
+      ) 
+  )
+```
+
 ---
 
 ## Format percents in text
