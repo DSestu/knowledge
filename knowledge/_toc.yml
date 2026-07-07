@@ -14,6 +14,7 @@ parts:
     - file: docs/python/databricks/databricks.md
     - file: docs/python/kedro/kedro.md
     - file: docs/python/selenium/selenium.md
+    - file: docs/dev/cursor.md
     - file: docs/python/misc/misc.md
     - file: docs/python/links/links.md
   - caption: Data Science
