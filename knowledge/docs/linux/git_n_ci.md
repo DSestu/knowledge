@@ -1,5 +1,15 @@
 # Git & CI
 
+## ZSHrc snippet to pull every repo in a folder in parallel
+
+Put this in the `.zshrc`.
+
+This supposes that every repo is in `$HOME/github/`, change that accordingly.
+
+```zsh
+alias pullall='for d in $HOME/github/*/; do (cd "$d" && if [ -d .git ]; then echo "Pulling in $(pwd)" && git pull; fi) & done; wait'
+```
+
 ## Rebase + squash onto latest master (one clean commit)
 
 ```bash
