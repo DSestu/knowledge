@@ -18,91 +18,256 @@ df.pipe(
 ## Automatically downcast dtypes of a polars dataframe
 
 ```python
+import polars as pl
+
+# Signed/unsigned integer types ordered narrowest -> widest, with their ranges.
+_INT_TYPES = [
+    (pl.Int8, -(2**7), 2**7 - 1),
+    (pl.UInt8, 0, 2**8 - 1),
+    (pl.Int16, -(2**15), 2**15 - 1),
+    (pl.UInt16, 0, 2**16 - 1),
+    (pl.Int32, -(2**31), 2**31 - 1),
+    (pl.UInt32, 0, 2**32 - 1),
+    (pl.Int64, -(2**63), 2**63 - 1),
+]
+_INT64_MIN, _INT64_MAX = -(2**63), 2**63 - 1
+
+# Float types ordered narrowest -> widest (polars has no 8-bit float).
+_FLOAT_TYPES = [pl.Float16, pl.Float32, pl.Float64]
+_FLOAT_BYTES = {pl.Float16: 2, pl.Float32: 4, pl.Float64: 8}
+
+
 def _equal_with_nulls(a: pl.Series, b: pl.Series) -> bool:
     """True if a and b have identical null masks and identical non-null values."""
     if not (a.is_null() == b.is_null()).all():
         return False
     return bool((a.drop_nulls() == b.drop_nulls()).all())
 
+
+def _downcast_int(col: pl.Series) -> pl.Series:
+    """Cast an integer series to the smallest (u)int type fitting its [min, max]."""
+    lo, hi = col.min(), col.max()
+    if lo is None:  # all-null or empty -> nothing to infer
+        return col
+    for target, tmin, tmax in _INT_TYPES:
+        if lo >= tmin and hi <= tmax:
+            return col.cast(target)
+    return col
+
+
+def _float_to_int(col: pl.Series) -> pl.Series | None:
+    """Return col as Int64 if every value is a finite whole number in Int64 range."""
+    nn = col.drop_nulls()
+    if nn.is_empty():
+        return None
+    if not bool(nn.is_finite().all()):  # ±inf / NaN can't be integers
+        return None
+    lo, hi = nn.min(), nn.max()
+    if lo < _INT64_MIN or hi > _INT64_MAX:
+        return None
+    if not bool((nn == nn.floor()).all()):  # fractional part present
+        return None
+    return col.cast(pl.Int64)
+
+
+def _downcast_float(col: pl.Series) -> pl.Series:
+    """Cast a float series to the narrowest float type (16 -> 32) that round-trips."""
+    cur = _FLOAT_BYTES[col.dtype]
+    for target in _FLOAT_TYPES:
+        if _FLOAT_BYTES[target] >= cur:
+            break  # candidates are ordered; nothing narrower left to try
+        if _equal_with_nulls(col, col.cast(target).cast(col.dtype)):
+            return col.cast(target)
+    return col
+
+
+def _parse_string(col: pl.Series) -> pl.Series | None:
+    """Parse a string series to a numeric type when the cast round-trips exactly.
+
+    The round-trip guard (parse -> re-stringify == original) rejects anything
+    lossy: leading zeros ("007"), thousands separators, trailing whitespace,
+    "1.0" vs "1", etc. Only genuinely reversible columns are converted.
+    """
+    for target in (pl.Int64, pl.Float64):
+        parsed = col.cast(target, strict=False)
+        if _equal_with_nulls(col, parsed.cast(pl.String)):
+            return parsed
+    return None
+
+
+def _downcast_datetime(col: pl.Series) -> pl.Series:
+    """Datetime -> Date if no time-of-day; else narrow the time unit losslessly."""
+    dtype = col.dtype
+    if col.drop_nulls().is_empty():
+        return col
+    # 1) Datetime -> Date when every value sits at midnight (Int64 -> Int32).
+    no_time = (
+        col.dt.hour().fill_null(0).eq(0)
+        & col.dt.minute().fill_null(0).eq(0)
+        & col.dt.second().fill_null(0).eq(0)
+        & col.dt.nanosecond().fill_null(0).eq(0)
+    ).all()
+    if no_time:
+        return col.cast(pl.Date)
+    # 2) Otherwise narrow the time unit (ns -> us -> ms) if precision is unused.
+    for tu in ("ms", "us"):
+        if dtype.time_unit == tu:
+            break  # already at/finer-than a coarser candidate we'd try
+        target = pl.Datetime(time_unit=tu, time_zone=dtype.time_zone)
+        if _equal_with_nulls(col, col.cast(target).cast(dtype)):
+            return col.cast(target)
+    return col
+
+
+def _downcast_series(
+    col: pl.Series,
+    *,
+    downcast_floats: bool,
+    float_to_int: bool,
+    cast_strings: bool,
+    parse_strings: bool,
+    cat_max_ratio: float,
+    downcast_datetimes: bool,
+) -> pl.Series:
+    """Return the smallest lossless representation of a single column."""
+    dtype = col.dtype
+
+    if dtype.is_integer():
+        return _downcast_int(col)
+
+    if dtype.is_float():
+        if float_to_int:
+            as_int = _float_to_int(col)
+            if as_int is not None:
+                return _downcast_int(as_int)  # then shrink to the tightest int type
+        if downcast_floats:
+            return _downcast_float(col)
+        return col
+
+    if dtype == pl.String:
+        if parse_strings:
+            parsed = _parse_string(col)
+            if parsed is not None:
+                # Recurse so parsed numbers get their own int/float downcast.
+                return _downcast_series(
+                    parsed,
+                    downcast_floats=downcast_floats,
+                    float_to_int=float_to_int,
+                    cast_strings=cast_strings,
+                    parse_strings=parse_strings,
+                    cat_max_ratio=cat_max_ratio,
+                    downcast_datetimes=downcast_datetimes,
+                )
+        if cast_strings:
+            n = col.len()
+            if n and col.n_unique() / n <= cat_max_ratio:
+                return col.cast(pl.Categorical)
+        return col
+
+    if isinstance(dtype, pl.Datetime) and downcast_datetimes:
+        return _downcast_datetime(col)
+
+    return col
+
+
 def downcast_df(
     df: pl.DataFrame,
     *,
     downcast_floats: bool = True,
+    float_to_int: bool = True,
     cast_strings: bool = True,
+    parse_strings: bool = True,
     cat_max_ratio: float = 0.5,
     downcast_datetimes: bool = True,
+    verbose: bool = False,
 ) -> pl.DataFrame:
     """Downcast column types to smaller representations without losing data.
 
     - Integers  -> smallest (u)int type fitting the observed [min, max].
-    - Floats    -> Float32 if the round-trip is exact (opt-out via downcast_floats).
-    - Strings   -> Categorical when unique ratio <= cat_max_ratio (opt-out via cast_strings).
+    - Floats    -> Int (then narrowed) when every value is a finite whole number
+                   (opt-out via float_to_int); otherwise Float32 if the round-trip
+                   is exact -- narrowing to the smallest of Float16/Float32 that
+                   round-trips (opt-out via downcast_floats).
+    - Strings   -> parsed to a numeric type when the parse round-trips exactly, then
+                   downcast as a number (opt-out via parse_strings); otherwise
+                   Categorical when unique ratio <= cat_max_ratio (opt-out via
+                   cast_strings).
     - Datetimes -> Date if no time-of-day component; else narrow ns/us -> ms losslessly.
     Null-only and empty columns are left untouched. Other dtypes are ignored.
+
+    Pass verbose=True to print a per-column summary of type changes and the
+    resulting memory savings.
     """
-    int_types = [
-        (pl.Int8, -(2**7), 2**7 - 1),
-        (pl.UInt8, 0, 2**8 - 1),
-        (pl.Int16, -(2**15), 2**15 - 1),
-        (pl.UInt16, 0, 2**16 - 1),
-        (pl.Int32, -(2**31), 2**31 - 1),
-        (pl.UInt32, 0, 2**32 - 1),
-        (pl.Int64, -(2**63), 2**63 - 1),
-    ]
-
     out = df
-    for name, dtype in df.schema.items():
+    changes: list[tuple[str, pl.DataType, pl.DataType, int, int]] = []
+    for name in df.columns:
         col = out.get_column(name)
-
-        if dtype.is_integer():
-            lo, hi = col.min(), col.max()
-            if lo is None:  # all-null or empty -> nothing to infer
-                continue
-            for target, tmin, tmax in int_types:
-                if lo >= tmin and hi <= tmax:
-                    out = out.with_columns(col.cast(target).alias(name))
-                    break
-
-        elif dtype == pl.Float64 and downcast_floats:
-            if _equal_with_nulls(
-                col, col.cast(pl.Float32).cast(pl.Float64)
-            ):
-                out = out.with_columns(col.cast(pl.Float32).alias(name))
-
-        elif dtype == pl.String and cast_strings:
-            n = col.len()
-            if n and col.n_unique() / n <= cat_max_ratio:
-                out = out.with_columns(
-                    col.cast(pl.Categorical).alias(name)
+        new = _downcast_series(
+            col,
+            downcast_floats=downcast_floats,
+            float_to_int=float_to_int,
+            cast_strings=cast_strings,
+            parse_strings=parse_strings,
+            cat_max_ratio=cat_max_ratio,
+            downcast_datetimes=downcast_datetimes,
+        )
+        if new.dtype != col.dtype:
+            if verbose:
+                changes.append(
+                    (
+                        name,
+                        col.dtype,
+                        new.dtype,
+                        col.estimated_size(),
+                        new.estimated_size(),
+                    )
                 )
+            out = out.with_columns(new.alias(name))
 
-        elif isinstance(dtype, pl.Datetime) and downcast_datetimes:
-            if col.drop_nulls().is_empty():
-                continue
-            # 1) Datetime -> Date when every value sits at midnight (Int64 -> Int32).
-            no_time = (
-                col.dt.hour().fill_null(0).eq(0)
-                & col.dt.minute().fill_null(0).eq(0)
-                & col.dt.second().fill_null(0).eq(0)
-                & col.dt.nanosecond().fill_null(0).eq(0)
-            ).all()
-            if no_time:
-                out = out.with_columns(col.cast(pl.Date).alias(name))
-                continue
-            # 2) Otherwise narrow the time unit (ns -> us -> ms) if precision is unused.
-            for tu in ("ms", "us"):
-                if dtype.time_unit == tu:
-                    break  # already at/finer-than a coarser candidate we'd try
-                target = pl.Datetime(
-                    time_unit=tu, time_zone=dtype.time_zone
-                )
-                if _equal_with_nulls(col, col.cast(target).cast(dtype)):
-                    out = out.with_columns(col.cast(target).alias(name))
-                    break
-
+    if verbose:
+        _print_summary(df, out, changes)
     return out
 
-print(df.estimated_size("mb"), "->", downcast_df(df).estimated_size("mb"))
+
+def _print_summary(
+    before: pl.DataFrame,
+    after: pl.DataFrame,
+    changes: list[tuple[str, pl.DataType, pl.DataType, int, int]],
+) -> None:
+    """Print a table of per-column type changes and total memory savings."""
+    n_cols = len(before.columns)
+    if not changes:
+        print(f"downcast_df: no changes ({n_cols} columns unchanged).")
+        return
+
+    name_w = max(len("column"), *(len(name) for name, *_ in changes))
+    from_w = max(len("from"), *(len(str(a)) for _, a, *_ in changes))
+    to_w = max(len("to"), *(len(str(b)) for _, _, b, *_ in changes))
+    header = f"{'column':<{name_w}}  {'from':<{from_w}}  {'to':<{to_w}}  saved"
+    print(f"downcast_df: {len(changes)}/{n_cols} columns changed")
+    print(header)
+    print("-" * len(header))
+    for name, a, b, before_sz, after_sz in changes:
+        saved = _human_bytes(before_sz - after_sz)
+        print(f"{name:<{name_w}}  {str(a):<{from_w}}  {str(b):<{to_w}}  {saved}")
+
+    total_before = before.estimated_size()
+    total_after = after.estimated_size()
+    pct = (1 - total_after / total_before) * 100 if total_before else 0.0
+    print(
+        f"total: {_human_bytes(total_before)} -> {_human_bytes(total_after)} "
+        f"({_human_bytes(total_before - total_after)} saved, {pct:.1f}%)"
+    )
+
+
+def _human_bytes(n: int) -> str:
+    """Format a byte count with a binary unit suffix."""
+    value = float(n)
+    for unit in ("B", "KiB", "MiB", "GiB"):
+        if abs(value) < 1024 or unit == "GiB":
+            return f"{value:.0f} {unit}" if unit == "B" else f"{value:.1f} {unit}"
+        value /= 1024
+    return f"{value:.1f} GiB"
 ```
 
 ## Geographical DBScan, and centroid estimation
@@ -415,15 +580,15 @@ results = feats.with_columns(
 
 ### Gotchas
 
-- **Positional alignment.** `beta[j]` is the coefficient of the feature
+* **Positional alignment.** `beta[j]` is the coefficient of the feature
   whose `col == j`. Because `feats` was built with `with_row_index` in a fixed sorted
   order, dropping `pl.Series(...)` onto it aligns by position — so **never re-sort
   `feats` between building `X` and attaching the coefficients**, and keep `obs`
   immutable so `y` stays aligned to `row`.
-- **Collinearity.** Features that never appear apart aren't separately identifiable;
+* **Collinearity.** Features that never appear apart aren't separately identifiable;
   `pinv` + rank-based `dof` keep the fit stable and those features surface as large
   `std_err` / wide confidence intervals rather than blowing up the inverse.
-- **Model choice.** Add `fit_intercept` by appending an all-ones column to `X` if the
+* **Model choice.** Add `fit_intercept` by appending an all-ones column to `X` if the
   target isn't a pure sum of the features; omit it when it is.
-- **Sparse format.** `csr` is fine for `X @ v` and the normal equations; `sklearn`
+* **Sparse format.** `csr` is fine for `X @ v` and the normal equations; `sklearn`
   linear models also accept sparse input (they prefer `csc` and convert automatically).
