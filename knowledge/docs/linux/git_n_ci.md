@@ -273,12 +273,21 @@ gh stack sync                 # fetch + cascading rebase + force-push + refresh 
 
 `gh stack sync` replaces the entire manual cascade above. Merge PR #1 in the UI, run `gh stack sync` again (next PR's base retargets to `main`), repeat bottom-up.
 
-### Inserting a layer in the middle (not on top)
+### Inserting a layer in the middle (not on top): `gh stack modify`
 
-`gh stack add` **cannot** do this — it "creates a new branch at the current HEAD, adds it to the top of the stack" and *must be run from the topmost branch*. To restructure, use the interactive editor:
+`gh stack add` **cannot** do this — it only appends on top of the stack. Restructuring is done with the interactive editor `gh stack modify`.
+
+⚠️ **Version-gated**: `modify` shipped in **v0.0.3** (May 2026); the insert keys in **v0.0.5**. If `gh stack --help` doesn't list `modify`, upgrade first:
 
 ```bash
-gh stack modify           # requires a clean working tree
+gh extension list                 # check installed version (v0.0.1 = April 2026, no modify)
+gh extension upgrade stack
+```
+
+Preconditions: active stack checked out, **clean working tree**, no rebase in progress, no PR queued for merge, linear history. Merged branches appear locked. `?` shows the help overlay.
+
+```bash
+gh stack modify
 ```
 
 Move the cursor to a branch, then:
@@ -288,14 +297,19 @@ Move the cursor to a branch, then:
 | `i` | Insert a new **empty** branch *below* the cursor (toward trunk) |
 | `I` | Insert a new **empty** branch *above* the cursor (away from trunk) |
 | `Shift+↑` / `Shift+↓` | Reorder a branch up/down the stack |
-| `r` | Rename branch |
+| `r` | Rename branch (inline prompt) |
 | `x` | Drop branch from stack (local branch + PR preserved) |
-| `d` / `u` | Fold commits into branch below / above |
+| `d` / `u` | Fold commits into branch below / above (cherry-pick) |
 | `z` | Undo last staged action |
+| `Ctrl+S` | Apply all staged actions |
 
-Actions are staged; `Ctrl+S` applies them all at once and runs a **cascading rebase** so history stays linear (upstack branches are re-parented automatically — no separate `gh stack sync` needed). On conflict: fix, then `gh stack modify --continue` (or `--abort` to restore the pre-modify state).
+`Ctrl+S` applies everything atomically and runs a **cascading rebase** so history stays linear (upstack branches are re-parented automatically). On conflict: fix, `git add`, then `gh stack modify --continue` (or `--abort` to restore the pre-modify state — works even if modify was interrupted).
 
-After inserting, checkout the new empty branch (`gh stack switch`), commit your work, then `gh stack submit` to create its PR and retarget the neighbors' bases.
+Constraints: reordering and structural changes (drop/fold/insert/rename) **cannot coexist in one session**; branches cannot be split or moved between stacks.
+
+After inserting: checkout the new empty branch, commit your work, then `gh stack submit` — it pushes the updated branches and recreates the stack (PR bases retargeted automatically).
+
+**Fallback without `modify`** (old version, can't upgrade): `gh stack unstack` (removes stack tracking; branches and PRs survive) → restructure with plain git (`git checkout parent && git checkout -b new-layer`, `git rebase --onto` for the upstack branches) → `gh stack init` to re-create the stack with the new structure.
 
 ### Leaving and re-entering a stack
 
@@ -332,7 +346,7 @@ Mental model: **`checkout` = get onto a stack · `switch`/`up`/`down` = move aro
 | Install | `gh extension install github/gh-stack` |
 | Start stack | `gh stack init <branch> --base main` |
 | Add a layer on top | `gh stack add <branch> -A -m "msg"` (from topmost branch only) |
-| Insert / reorder / rename / drop layers | `gh stack modify` (interactive; `i`/`I` insert, `Ctrl+S` applies + cascading rebase) |
+| Insert / reorder / rename / drop layers | `gh stack modify` (interactive TUI; needs ≥v0.0.5 for insert — `gh extension upgrade stack`) |
 | See the stack | `gh stack view` |
 | Create/update all PRs | `gh stack submit` |
 | Restack after edits | `gh stack sync` |
