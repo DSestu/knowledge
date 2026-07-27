@@ -254,7 +254,7 @@ gh stack alias                # optional: alias `gh stack` → `gs`
 gh stack init avatar-migration --base main
 git add -A && git commit -m "Add avatar_url column + migration"
 
-# Stack layers on top (branches off wherever you are; -A stages, -m commits)
+# Stack layers on top (must be run from the TOPMOST branch; -A stages, -m commits)
 gh stack add avatar-api -A -m "Add POST /users/:id/avatar endpoint"
 gh stack add avatar-ui  -A -m "Add avatar upload widget"
 
@@ -272,6 +272,30 @@ gh stack sync                 # fetch + cascading rebase + force-push + refresh 
 ```
 
 `gh stack sync` replaces the entire manual cascade above. Merge PR #1 in the UI, run `gh stack sync` again (next PR's base retargets to `main`), repeat bottom-up.
+
+### Inserting a layer in the middle (not on top)
+
+`gh stack add` **cannot** do this — it "creates a new branch at the current HEAD, adds it to the top of the stack" and *must be run from the topmost branch*. To restructure, use the interactive editor:
+
+```bash
+gh stack modify           # requires a clean working tree
+```
+
+Move the cursor to a branch, then:
+
+| Key | Action |
+|-----|--------|
+| `i` | Insert a new **empty** branch *below* the cursor (toward trunk) |
+| `I` | Insert a new **empty** branch *above* the cursor (away from trunk) |
+| `Shift+↑` / `Shift+↓` | Reorder a branch up/down the stack |
+| `r` | Rename branch |
+| `x` | Drop branch from stack (local branch + PR preserved) |
+| `d` / `u` | Fold commits into branch below / above |
+| `z` | Undo last staged action |
+
+Actions are staged; `Ctrl+S` applies them all at once and runs a **cascading rebase** so history stays linear (upstack branches are re-parented automatically — no separate `gh stack sync` needed). On conflict: fix, then `gh stack modify --continue` (or `--abort` to restore the pre-modify state).
+
+After inserting, checkout the new empty branch (`gh stack switch`), commit your work, then `gh stack submit` to create its PR and retarget the neighbors' bases.
 
 ### Leaving and re-entering a stack
 
@@ -307,7 +331,8 @@ Mental model: **`checkout` = get onto a stack · `switch`/`up`/`down` = move aro
 |---------|---------|
 | Install | `gh extension install github/gh-stack` |
 | Start stack | `gh stack init <branch> --base main` |
-| Add a layer | `gh stack add <branch> -A -m "msg"` |
+| Add a layer on top | `gh stack add <branch> -A -m "msg"` (from topmost branch only) |
+| Insert / reorder / rename / drop layers | `gh stack modify` (interactive; `i`/`I` insert, `Ctrl+S` applies + cascading rebase) |
 | See the stack | `gh stack view` |
 | Create/update all PRs | `gh stack submit` |
 | Restack after edits | `gh stack sync` |
