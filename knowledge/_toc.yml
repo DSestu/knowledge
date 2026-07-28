@@ -37,6 +37,8 @@ parts:
     - file: docs/linux/tools.md
     - file: docs/linux/kde.md
     - file: docs/linux/git_n_ci.md
+    - file: docs/linux/gh_stack.md
+    - file: docs/linux/tailscale.md
   - caption: NixOS
     numbered: False
     chapters:
