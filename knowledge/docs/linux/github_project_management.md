@@ -311,3 +311,4 @@ gh stack modify
 a
 b
 c
+d
