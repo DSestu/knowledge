@@ -341,3 +341,5 @@ You will be able to merge chunks of the stacks through the interface, but don't 
 Once the stack is merged, the issue will be closed, and the parent issue will be updated to reflect the progress.
 
 ![Stack partially merged](./imgs/stack_totally_merged.png)
+
+a
