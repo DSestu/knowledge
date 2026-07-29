@@ -236,6 +236,8 @@ And the milestone made progress too:
 
 ## 7. PR stacking
 
+> Don't hesitate to read the more in-depth documentation about PR stacking in this knowledge repo: [PR stacking](./gh_stack.md).
+
 PR stacking can work well in par with this kind of project management, if we are working at a mono-repo level.
 
 PR stacking can be, of course, used inside a single issue *(issues can be linked to multiple PRs)*.
