@@ -301,3 +301,11 @@ Using the stack view command, you can easily checkout to this branch, then run t
 One useful feature is that you can also add new layers of in the stack, bottom, top or in between.
 
 So, if for example, you find during development that there is a bug that needs to be fixed before even implementing the data source schema, you can add a new layer in the stack, at the very bottom. Then, bugfix on this branch, and cascade rebase your branches to the top.
+
+```bash
+gh stack modify
+```
+
+![Stack with new layer](./imgs/stack_with_new_layer.png)
+
+a
