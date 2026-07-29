@@ -310,7 +310,34 @@ gh stack modify
 
 ![Stack with new layer](./imgs/stack_with_new_layer.png)
 
-a
-b
-c
-d
+Checkout the bugfix branch, fix the bug, and cascade rebase your branches to the top with `gh stack rebase`.
+
+You can batch create PR's with:
+
+```bash
+gh stack submit
+```
+
+This will show a TUI to review PR names and descriptions etc. Then, it will submit the PR's to the remote repository.
+
+![Stack submit](./imgs/stack_submit.png)
+
+Once you are done, you will have your stack of PR's ready to be merged.
+
+![stack_interface](./imgs/stack_interface.png)
+
+Now we have the same kind of project management as before, but with linked branches and stacked rebases.
+
+The bottom PR will only propose a simple merge commit. The other PR's will propose a batch merge commit with a squash commit with PR that are below it in the stack.
+
+![Project after stack](./imgs/project_after_stack.png)
+
+For now, github stacks are in preview. If you create PR's like that, only the PR on the top of the stack will be linked to it's issue.
+
+You will be able to merge chunks of the stacks through the interface, but don't forget to use `gh stack sync` after this to mirror the changes locally.
+
+![Stack partially merged](./imgs/stack_partially_merged.png)
+
+Once the stack is merged, the issue will be closed, and the parent issue will be updated to reflect the progress.
+
+![Stack partially merged](./imgs/stack_totally_merged.png)
