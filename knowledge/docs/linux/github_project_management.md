@@ -236,7 +236,7 @@ And the milestone made progress too:
 
 ## 7. PR stacking
 
-PR stacking can work well in par with this kind of project management, if we are working at a monorepo level.
+PR stacking can work well in par with this kind of project management, if we are working at a mono-repo level.
 
 PR stacking can be, of course, used inside a single issue *(issues can be linked to multiple PRs)*.
 
