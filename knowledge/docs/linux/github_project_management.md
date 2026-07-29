@@ -151,6 +151,24 @@ The "blocked" status will be removed once each of the blocking issue is complete
 
 > **I strongly recommend to have the `gh` CLI installed, together with the gh-stack plugin.**
 
+> I also recommend to create issue templates for each kind of issue you have. This will help you to standardize the issues, and to have a consistent way of working. [Doc here](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/configuring-issue-templates-for-your-repository)
+
+You will find useful issue templates here: <https://github.com/stevemao/github-issue-templates>.
+
+I recommend to have a template for each of this use case:
+
+* Product feature scope (context/problem/business value/solution/definition of done)
+* Simple step implementation (for example, "Implement the data source schema", short description, why necessary, how it is placed in the overall scope)
+* Bug reporting
+* Code improvements / Architecture improvements
+* Investigation trace/report (initiated by strange behaviour, something unexpected/suspicious)
+
+> I also recommend to create dedicated tags (via the repo settings) for feature priority (eg priority:P0, priority:P1, priority:P2, priority:P3, priority:P4, priority:P5). This will help you to filter issues by priority. The same can be done with effort estimation, and bug severity (eg bug:high, bug:medium, bug:low, effort:1, effort:2, effort:3, effort:4, effort:5).
+>
+> Those tags will help you to keep track of issue via specialized Project views.
+
+Issues templates documentation here:
+
 Issue statuses can be modified by hand. However, there are default integrated workflows in projects.
 
 Issues can be linked to pull requests. The state of an issue can be linked to the existence/status of one or more pull requests.
@@ -345,3 +363,14 @@ You will be able to merge chunks of the stacks through the interface, but don't 
 Once the stack is merged, the issue will be closed, and the parent issue will be updated to reflect the progress.
 
 ![Stack partially merged](./imgs/stack_totally_merged.png)
+
+# Additional notes
+
+During development, you can spot some issues in the code that you won't tackle right now. In this case you can create an issue to fix it later.
+
+There is a simple way do do this in VSCode/ Cursor:
+
+* Select a piece of code
+* Command palette: "Create GitHub Issue from selection"
+* Type the title
+* Open it in github to start adding tags and more detailed description
