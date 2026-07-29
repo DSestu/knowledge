@@ -343,3 +343,4 @@ Once the stack is merged, the issue will be closed, and the parent issue will be
 ![Stack partially merged](./imgs/stack_totally_merged.png)
 
 a
+b
