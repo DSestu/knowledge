@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "PowerShell(Get-ChildItem -Path \"D:\\\\projets_python_ssd\\\\Sencrop\\\\knowledge\" -Recurse -Force | ForEach-Object { $_.FullName.Replace\\(\"D:\\\\projets_python_ssd\\\\Sencrop\\\\knowledge\", \".\"\\) } | Sort-Object | Select-Object -First 200)",
+      "Bash(git checkout *)",
+      "Bash(uv run *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(npm --version)",
+      "Bash(npx mintlify *)",
+      "Bash(Get-Content \"C:\\\\Users\\\\david\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--projets-python-ssd-Sencrop-knowledge\\\\62cae626-3c93-48f8-bc9e-5881a6b62b94\\\\tasks\\\\b7kjdg7ql.output\" -Wait)",
+      "Bash(Select-String -Pattern \"localhost|Error|error|ready|Ready|failed|Failed|warn|http\")",
+      "Bash(Get-Content \"C:\\\\Users\\\\david\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\D--projets-python-ssd-Sencrop-knowledge\\\\62cae626-3c93-48f8-bc9e-5881a6b62b94\\\\tasks\\\\b7kjdg7ql.output\")",
+      "Bash(Select-Object -Last 30)",
+      "Bash(nvm list *)",
+      "Bash(fnm list *)",
+      "Bash(volta list *)",
+      "PowerShell(nvm list 2>&1)",
+      "PowerShell(if \\(-not $?\\) { \"nvm not found\" })",
+      "PowerShell($env:PATH = \"$env:LOCALAPPDATA\\\\Microsoft\\\\WinGet\\\\Packages\\\\Schniz.fnm_Microsoft.Winget.Source_8wekyb3d8bbwe;$env:PATH\"; fnm install 20 --arch x64 2>&1)",
+      "PowerShell($env:PATH = \"$env:LOCALAPPDATA\\\\Microsoft\\\\WinGet\\\\Packages\\\\Schniz.fnm_Microsoft.Winget.Source_8wekyb3d8bbwe;$env:PATH\"; fnm env --use-on-cd --shell powershell | Invoke-Expression; fnm use 20; node --version 2>&1)",
+      "Read(//mnt/c/Users/david/AppData/Local/Temp/**)",
+      "Bash(gh --version)",
+      "Bash(gh project *)",
+      "Bash(gh extension *)",
+      "Bash(gh stack *)",
+      "Bash(gh auth *)",
+      "WebFetch(domain:gist.github.com)",
+      "WebFetch(domain:tailscale.com)"
+    ]
+  }
+}

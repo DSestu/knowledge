@@ -39,6 +39,7 @@ parts:
     - file: docs/linux/git_n_ci.md
     - file: docs/linux/gh_stack.md
     - file: docs/linux/tailscale.md
+    - file: docs/linux/github_project_management.md
   - caption: NixOS
     numbered: False
     chapters:
