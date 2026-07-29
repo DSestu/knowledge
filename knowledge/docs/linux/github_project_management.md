@@ -320,6 +320,12 @@ gh stack submit
 
 This will show a TUI to review PR names and descriptions etc. Then, it will submit the PR's to the remote repository.
 
+> For now, github stacks are in preview. If you create PR's like that, only the PR on the top of the stack will be linked to it's issue.
+
+The trick to link a PR to an issue at creation time is to add `closes #<issue-number>` in the PR description.
+
+So, here, you have to edit each PR description to add `closes #<issue-number>` so the PR is linked to the issue.
+
 ![Stack submit](./imgs/stack_submit.png)
 
 Once you are done, you will have your stack of PR's ready to be merged.
@@ -332,8 +338,6 @@ The bottom PR will only propose a simple merge commit. The other PR's will propo
 
 ![Project after stack](./imgs/project_after_stack.png)
 
-For now, github stacks are in preview. If you create PR's like that, only the PR on the top of the stack will be linked to it's issue.
-
 You will be able to merge chunks of the stacks through the interface, but don't forget to use `gh stack sync` after this to mirror the changes locally.
 
 ![Stack partially merged](./imgs/stack_partially_merged.png)
@@ -341,5 +345,3 @@ You will be able to merge chunks of the stacks through the interface, but don't 
 Once the stack is merged, the issue will be closed, and the parent issue will be updated to reflect the progress.
 
 ![Stack partially merged](./imgs/stack_totally_merged.png)
-
-a
