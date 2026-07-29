@@ -309,3 +309,4 @@ gh stack modify
 ![Stack with new layer](./imgs/stack_with_new_layer.png)
 
 a
+b
