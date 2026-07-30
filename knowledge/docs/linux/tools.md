@@ -442,3 +442,18 @@ Make sure to enable mouse support and keybinds:
 > [ranger](https://github.com/ranger/ranger)
 
 ![Cheat sheet](https://ranger.github.io/cheatsheet.png)
+
+# Caddy: one-liner reverse proxy
+
+Put a front door in front of an existing service with a single command:
+
+```bash
+caddy reverse-proxy --from <PUBLIC_ADDR> --to <BACKEND_ADDR>
+```
+
+* `<PUBLIC_ADDR>` — where clients connect. E.g. `https://192.168.1.50:8443`
+* `<BACKEND_ADDR>` — the service to forward to. E.g. `127.0.0.1:8096`
+
+Using an HTTPS `<PUBLIC_ADDR>` gives automatic TLS: a real domain gets a
+Let's Encrypt certificate; a bare IP gets a self-signed one from Caddy's
+local CA (trusted only where that CA is installed).
