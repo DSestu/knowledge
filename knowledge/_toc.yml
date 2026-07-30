@@ -40,6 +40,29 @@ parts:
     - file: docs/linux/gh_stack.md
     - file: docs/linux/tailscale.md
     - file: docs/linux/github_project_management.md
+  - caption: Windows
+    numbered: False
+    chapters:
+    - file: docs/windows/setup.md
+    - file: docs/windows/ffmpeg.md
+    - file: docs/windows/context_managers.md
+    - file: docs/windows/misc.md
+  - caption: Android
+    numbered: False
+    chapters:
+    - file: docs/android/rooting.md
+    - file: docs/android/apps.md
+    - file: docs/android/jellyfin.md
+  - caption: Pentest
+    numbered: False
+    chapters:
+    - file: docs/pentest/using_tor.md
+    - file: docs/pentest/shodan.md
+    - file: docs/pentest/samba.md
+    - file: docs/pentest/misc.md
+    - file: docs/pentest/nmap.md
+    - file: docs/pentest/android.md
+    - file: docs/pentest/nethunter.md
   - caption: NixOS
     numbered: False
     chapters:
@@ -60,28 +83,6 @@ parts:
     - file: docs/nixos/windows-to-nixos.md
     - file: docs/nixos/kali-to-nixos.md
     - file: docs/nixos/perso.md
-  - caption: Windows
-    numbered: False
-    chapters:
-    - file: docs/windows/setup.md
-    - file: docs/windows/ffmpeg.md
-    - file: docs/windows/context_managers.md
-    - file: docs/windows/misc.md
-  - caption: Android
-    numbered: False
-    chapters:
-    - file: docs/android/rooting.md
-    - file: docs/android/apps.md
-  - caption: Pentest
-    numbered: False
-    chapters:
-    - file: docs/pentest/using_tor.md
-    - file: docs/pentest/shodan.md
-    - file: docs/pentest/samba.md
-    - file: docs/pentest/misc.md
-    - file: docs/pentest/nmap.md
-    - file: docs/pentest/android.md
-    - file: docs/pentest/nethunter.md
   - caption: Stable diffusion
     numbered: False
     chapters:
