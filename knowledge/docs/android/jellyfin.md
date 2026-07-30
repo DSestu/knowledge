@@ -43,3 +43,27 @@ Every time you want to cast:
 This setup allows also to watch media from an other person computer for example.
 
 This can be very useful to watch TV from an other country if Jellyfin has access to TV streams from your local network. For this, you will have to setup a tuner device and a xmltv provider (<https://xmltvfr.fr/xmltv/xmltv_fr.xml> works well for french TV channels)
+
+### Casting from google chrome
+
+In chrome, you can't cast if the jellyfin is on http and not https.
+
+#### 1. Using a reverse proxy
+
+A small trick is to use a reverse proxy to encapsulate into https. See `caddy` section in the linux tools section in this knowledge base.
+
+```bash
+caddy reverse-proxy --to <ip of your jellyfin server>:8096 --from <your local computer ip address>:8096
+```
+
+Then go on jellyfin from your localhost. The HTTPS certificate will not be trusted, but you will be able to cast.
+
+#### 2. By setting a flag in the chrome browser
+
+In chrome, you can set a flag to allow casting from http.
+
+```bash
+chrome://flags/#unsafely-treat-insecure-origin-as-secure
+```
+
+Set the flag to `Enabled`. Then you will be able to cast from the http version of jellyfin.
