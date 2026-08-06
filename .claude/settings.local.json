@@ -27,7 +27,20 @@
       "Bash(gh stack *)",
       "Bash(gh auth *)",
       "WebFetch(domain:gist.github.com)",
-      "WebFetch(domain:tailscale.com)"
+      "WebFetch(domain:tailscale.com)",
+      "Bash(nix-shell -p fd --command \"fd -t f jellyfin /home/david/github/knowledge\")",
+      "WebFetch(domain:f-droid.org)",
+      "WebFetch(domain:github.com)",
+      "Read(//run/**)",
+      "Bash(ip -br link show)",
+      "Bash(ip route *)",
+      "Bash(ip rule *)",
+      "Bash(sysctl net.ipv4.conf.all.rp_filter net.ipv4.conf.default.rp_filter)",
+      "Bash(grep *)",
+      "Bash(nslookup -type=a desktop-tvtdome.tail6c627.ts.net 8.8.8.8)",
+      "Bash(nslookup -type=aaaa desktop-tvtdome.tail6c627.ts.net 8.8.8.8)",
+      "Read(//home/david/github/**)",
+      "Bash(git --no-pager diff --stat)"
     ]
   }
 }
