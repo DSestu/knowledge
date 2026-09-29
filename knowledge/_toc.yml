@@ -47,6 +47,7 @@ parts:
     - file: docs/windows/ffmpeg.md
     - file: docs/windows/context_managers.md
     - file: docs/windows/misc.md
+    - file: docs/windows/remote_recovery.md
   - caption: Android
     numbered: False
     chapters:
