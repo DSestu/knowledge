@@ -84,6 +84,11 @@ parts:
     - file: docs/nixos/windows-to-nixos.md
     - file: docs/nixos/kali-to-nixos.md
     - file: docs/nixos/perso.md
+  - caption: Agents
+    numbered: False
+    chapters:
+    - file: docs/agents/orchestration.md
+    - file: docs/agents/skills.md
   - caption: Stable diffusion
     numbered: False
     chapters:
